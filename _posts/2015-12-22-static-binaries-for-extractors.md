@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Static binaries for command-line extractors for music descriptors
+category: news
 ---
 
 We are now hosting static binaries for a number command-line extractors, originally developed as examples of how Essentia can be used in applications. These tools make it easy to compute some descriptors and store them to a file given an audio file as an input (therefore, called "extractors") without any need to install Essentia library itself.

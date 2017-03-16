@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Essentia wins the Open-Source Competition of ACM Multimedia
+category: news
 ---
 
 Essentia wins the Open-Source Software Competition of [ACM Multimedia 2013](http://acmmm13.org/), the worldwide premier multimedia conference that took place in Barcelona from October 21st to 25th 2013.

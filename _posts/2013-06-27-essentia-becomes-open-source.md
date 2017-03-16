@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Essentia 2.0 becomes open source!!!
+category: 
+- news
+- releases
 ---
 
 Today, June 27th 2013, Essentia becomes Open Source Software and we start distributing it using the Affero-GPLv3 license (also available under proprietary license upon request).

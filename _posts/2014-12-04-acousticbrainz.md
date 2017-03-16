@@ -1,6 +1,9 @@
 ---
 layout: post
 title: AcousticBrainz - a large-scale music analysis project using Essentia
+category: 
+- news
+- applications
 ---
 
 We are very excited to announce the [AcousticBrainz](http://acousticbrainz.org/), a new collaboration project between [MusicBrainz](http://musicbrainz.org/) community and the [Music Technology Group](http://mtg.upf.edu), that uses the power of music analysis done by Essentia to build a large-scale open content database of music.

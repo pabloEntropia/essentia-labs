@@ -1,6 +1,7 @@
 ---
 layout: post
-title: Updates to cepstral features (MFCC and GFCC) 
+title: Updates to cepstral features (MFCC and GFCC)
+category: news
 ---
 
 Working towards the next Essentia release, we have updated our cepstral features. The updates include:
