@@ -6,7 +6,17 @@ layout: default
   <h1 class="post-title">{{ page.title }}</h1>
   <span class="post-date">{{ page.date | date_to_string }}</span>
   {{ content }}
+
+  <!-- <p>Tagged with {{ page.categories | join: ', ' }}</p> -->
+  <p>
+    {% unless page.categories == empty %}
+      {% for cat in page.categories %}
+        [ <a href="{{ site.baseurl }}/{{ cat }}">{{ cat }}</a> ]
+      {% endfor %}
+    {% endunless %}
+  </p>
 </div>
+
 
 <!--
 <div class="related">
