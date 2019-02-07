@@ -3,13 +3,13 @@ layout: post
 title: Invertible Constant-Q based on Non-Stationary Gabor frames
 category: news
 ---
-A Constant-Q transform is a time/frequency representation where the bins follow a geometric progression. This means that the bins can be chosen to represent the frequencies of the semitones (or fractions of semitones) from an equal tempered scale. This could be seen as a dimensionality reduction over the Short-Time Fourier transform done in a way that matches the human musical interpretation of frequency. 
+A Constant-Q transform is a time/frequency representation where the bins follow a geometric progression. This means that the bins can be chosen to represent the frequencies of the semitones (or fractions of semitones) from an equal-tempered scale. This could be seen as a dimensionality reduction over the Short-Time Fourier transform done in a way that matches the human musical interpretation of frequency. 
 
 However, most of the CQ implementations have drawbacks. They are computationally inefficient, lacking C/C++ solutions, and most importantly, not invertible. Which makes them unsuitable for applications such as audio modification or synthesis.
 
 Recently we have implemented an invertible CQ algorithm based on Non-Stationary Gabor frames [1]. The [NSGConstantQ](https://essentia.upf.edu/documentation/reference/std_NSGConstantQ.html) reference page contains details about the algorithm and the related research.
 
-Below, we will show how to get CQ spectrograms in Essentia and estime the reconstruction error in terms of SNR.
+Below, we will show how to get CQ spectrograms in Essentia and estimate the reconstruction error in terms of SNR.
 
 
 ## Standard computation
@@ -42,7 +42,7 @@ constantq, dcchannel, nfchannel = NSGConstantQ(**params)(x)
 y = NSGIConstantQ(**params)(constantq, dcchannel, nfchannel)
 ```
 
-The algorithm generates three outputs: `constantq`, `dcchannel` and `nfchannel`. The reason for this is that the Constant-Q condition is held between the (`minFrequency`, `maxFrequency`) range, but the information in the DC and Nyquist channels is also required for a perfect reconstruction. We were able to run the analysis/synthesis process at 32x realtime on a 3.4GHz i5-3570 CPU.
+The algorithm generates three outputs: `constantq`, `dcchannel` and `nfchannel`. The reason for this is that the Constant-Q condition is held between the (`minFrequency`, `maxFrequency`) range, but the information in the DC and Nyquist channels is also required for perfect reconstruction. We were able to run the analysis/synthesis process at 32x realtime on a 3.4GHz i5-3570 CPU.
 
 Let's evaluate the quality of the reconstructed signal in terms of SNR:
 
@@ -138,7 +138,7 @@ print('Reconstruction SNR: {:.3f} dB'.format(cq_snr))
     Reconstruction SNR: 133.596 dB
 
 
-Displaying the framewise transform is slighly more tricky as we have to overlap-add the spectrograms obtained for each frame. To facilitate that we provide a function as shown in the next example. The framewise Constant-Q spectrogram is not supposed to be identical to the standard computation. 
+Displaying the framewise transform is slightly more tricky as we have to overlap-add the spectrograms obtained for each frame. To facilitate that we provide a function as shown in the next example. The framewise Constant-Q spectrogram is not supposed to be identical to the standard computation. 
 
 
 
