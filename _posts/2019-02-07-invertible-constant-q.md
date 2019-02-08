@@ -84,7 +84,7 @@ plt.show()
 ```
 
 
-![png](assets/invertible-constant-q/standard_cq.png)
+![png]({{ site.baseurl }}/assets/invertible-constant-q/standard_cq.png)
 
 
 Finally, we can listen and compare the original and the reconstructed signals!
@@ -97,7 +97,7 @@ Audio(x, rate=44100)
 ```
 
 
-<audio src="assets/invertible-constant-q/vignesh_original.wav" controls preload></audio>  
+<audio src="{{ site.baseurl }}/assets/invertible-constant-q/vignesh_original.wav" controls preload></audio>  
 
 
 
@@ -109,7 +109,7 @@ Audio(y, rate=44100)
 ```
 
 
-<audio src="assets/invertible-constant-q/vignesh_resynthetized.wav" controls preload></audio>  
+<audio src="{{ site.baseurl }}/assets/invertible-constant-q/vignesh_resynthetized.wav" controls preload></audio>  
 
 
 
@@ -153,7 +153,7 @@ plt.show()
 ```
 
 
-![png](assets/invertible-constant-q/framewise_cq.png)
+![png]({{ site.baseurl }}/assets/invertible-constant-q/framewise_cq.png)
 
 
 
