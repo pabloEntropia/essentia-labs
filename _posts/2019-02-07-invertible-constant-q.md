@@ -5,7 +5,7 @@ category: news
 ---
 A Constant-Q transform is a time/frequency representation where the bins follow a geometric progression. This means that the bins can be chosen to represent the frequencies of the semitones (or fractions of semitones) from an equal-tempered scale. This could be seen as a dimensionality reduction over the Short-Time Fourier transform done in a way that matches the human musical interpretation of frequency. 
 
-However, most of the CQ implementations have drawbacks. They are computationally inefficient, lacking C/C++ solutions, and most importantly, not invertible. Which makes them unsuitable for applications such as audio modification or synthesis.
+However, most of the CQ implementations have drawbacks. They are computationally inefficient, lacking C/C++ solutions, and most importantly, not invertible. This makes them unsuitable for applications such as audio modification or synthesis.
 
 Recently we have implemented an invertible CQ algorithm based on Non-Stationary Gabor frames [1]. The [NSGConstantQ](https://essentia.upf.edu/documentation/reference/std_NSGConstantQ.html) reference page contains details about the algorithm and the related research.
 
