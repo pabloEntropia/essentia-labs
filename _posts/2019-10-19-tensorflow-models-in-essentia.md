@@ -7,34 +7,58 @@ Audio Signal Processing and Music Information Retrieval evolves very fast, and t
 
 In this post, we will show how to install TensorFlow for Essentia, how to prepare your pre-trained models and how to use them for prediction in both streaming and standard modes.
 
-# Installing TensorFlow for Essentia
-We are currently working in give it support via pip wheels. 
-However, for now the only solution is to compile it with the following steps:
-1. Install the `libtensorflow` following [this tutorial](https://www.tensorflow.org/install/lang_c)
-2. Install boost `sudo apt-get install libboost-dev`
-2. add .pc file [TODO]
-3. Run `sudo ldconfig`
-4. Download [essentia with tensorflow support](https://github.com/MTG/essentia/pull/802)
-5. On the Essentia base folder:
-    1. `python3 ./waf configure --with-python --with-tensorflow`
-    2. `python3 ./waf` 
-    3. `python3 sudo ./waf install`
+# Installing Essentia with TensorFlow
+## From PiPy wheels
+We have built Python 3 wheels for Linux that can be installed with `pip`. These wheels are based in TensorFlow 1.15.0.
+```sh
+pip install essentia-tensorflow
+```
+## Building Essentia from source
+Another option is to build the library from source. This way we have the freedom to choose the TensorFlow version to link against. In our case, we keep using version 1.15.0.
+1. Install TensorFlow:
+```bash
+pip install tensorflow==1.15.0
+```
+2. Clone [Essentia](https://github.com/MTG/essentia/):
+```sh
+git clone https://github.com/MTG/essentia.git
+```
+3. Run `setup_from_python.sh`. This script exposes the shared libraries contained in the TensorFlow wheel so we can link against them. This step may require `sudo`:
+```sh
+cd essentia && src/3rdparty/tensorflow/setup_from_python.sh
+```
+4. Install the [dependancies](https://essentia.upf.edu/installing.html#installing-dependencies-on-linux) for Linux with Python 3:
+```sh
+sudo apt-get install build-essential libyaml-dev libfftw3-dev libavcodec-dev libavformat-dev libavutil-dev libavresample-dev python-dev libsamplerate0-dev libtag1-dev libchromaprint-dev python-six python3-dev python3-numpy-dev python3-numpy python3-yaml
+```
+5. Configure Essentia with TensorFlow:
+```sh
+python3 waf configure --build-static --with-python --with-tensorflow
+```
+6. Build everything:
+```sh
+python3 waf
+```
+7. Install:
+```sh
+python3 waf install
+```
  
-This approach as only been tested in Linux
+This approach has only been tested in Linux
 
 ## Auto-tagging with musiCNN in Streaming mode
-As an example, let's try to use [musiCNN](https://github.com/jordipons/musicnn), a collection of auto-tagging models based on Convolutional Neural Networks (CNNs). These models were trained on different datasets and we will consider  the one trained on Million Song Dataset. It predicts the [top 50 tags of last.fm](http://millionsongdataset.com/lastfm/).  Here we are reproducing the example of [this blogpost](https://towardsdatascience.com/musicnn-5d1a5883989b) as a demonstration of how simple it is to incorporate a model into our framework.
+As an example, let's try to use [musiCNN](https://github.com/jordipons/musicnn), a collection of auto-tagging models based on Convolutional Neural Networks (CNNs). These models were trained on different datasets and we will consider the one trained on Million Song Dataset. It predicts the [top 50 tags of last.fm](http://millionsongdataset.com/lastfm/). Here we are reproducing the example of [this blogpost](https://towardsdatascience.com/musicnn-5d1a5883989b) as a demonstration of how simple it is to incorporate a model into our framework.
 All we need is to get a frozen version of the model, the names of the layers and the meaning of each activation:
 
 
 ```python
-modelName = 'musiCNN_MSD.pb'
+modelName = 'MSD_musicnn_frozen_small.pb'
 input_layer = 'model/Placeholder'
 output_layer = 'model/Sigmoid'
 msd_labels = ['rock','pop','alternative','indie','electronic','female vocalists','dance','00s','alternative rock','jazz','beautiful','metal','chillout','male vocalists','classic rock','soul','indie rock','Mellow','electronica','80s','folk','90s','chill','instrumental','punk','oldies','blues','hard rock','ambient','acoustic','experimental','female vocalist','guitar','Hip-Hop','70s','party','country','easy listening','sexy','catchy','funk','electro','heavy metal','Progressive rock','60s','rnb','indie pop','sad','House','happy']
 ```
 
-We provide pre-made models on [our webpage](https://essentia.upf.edu/documentation/models/).
+We provide pre-made models on [our webpage](https://essentia.upf.edu/documentation/models/). In this example we are using [this one](https://essentia.upf.edu/models/autotagging/MSD_musicnn_frozen_small.pb).
 
 One of the keys to make predictions faster is the use of our C++ extractor. Essentia's mel-spectrograms offer parameters that makes it possible to reproduce the features from the most of the well-known audio analysis libraries. In this case we are reproducing the original features computed with [Librosa](https://librosa.github.io/).
 
@@ -60,7 +84,7 @@ First of all we instantiate the required algorithms
 from essentia.streaming import *
 from essentia import Pool, run
 
-filename = 'barry_white-you_heart_and_soul.mp3'
+filename = 'your/amazing/song.mp3'
 
 audio = MonoLoader(filename=filename, sampleRate=sampleRate)
 
@@ -160,7 +184,7 @@ plt.rcParams["figure.figsize"] = [12, 20]
 
 f, ax = plt.subplots()
 ax.matshow(pool[output_layer].T, aspect=1.5)
-_ = plt.yticks(np.arange(50), MSD_LABELS, fontsize=11)
+_ = plt.yticks(np.arange(50), msd_labels, fontsize=11)
 ```
 
 ![png]({{ site.baseurl }}/assets/tensorflow-models-in-essentia/taggram.png)
@@ -171,7 +195,7 @@ The standard mode is another alternative to use the new algorithms where they ar
 
 
 ```python
-import  essentia.standard as es
+import essentia.standard as es
 
 predict = es.TensorflowPredict(graphFilename=modelName,
                               inputs=[input_layer],
@@ -237,9 +261,9 @@ print(out)
 Which is more than 2 times the time it took in Essentia. Great!
 
 # Using TensorFlow frozen models
-In order to maximize efficiency, we only support frozen Tensorflow models. By freezing a model its variables are converted into constant values allowing for some optimizations.
+In order to maximize efficiency, we only support frozen TensorFlow models. By freezing a model its variables are converted into constant values allowing for some optimizations.
 
-Frozen models are easy to generate given a Tensorflow architecture and its weights. In our case we have used the following script where our architecture is defined on an external method `DEFINE_YOUR_ARCHITECTURE()` and the weights are loaded from a `CHECKPOINT_FOLDER/`. 
+Frozen models are easy to generate given a TensorFlow architecture and its weights. In our case we have used the following script where our architecture is defined on an external method `DEFINE_YOUR_ARCHITECTURE()` and the weights are loaded from a `CHECKPOINT_FOLDER/`. 
 
 
 ```python
