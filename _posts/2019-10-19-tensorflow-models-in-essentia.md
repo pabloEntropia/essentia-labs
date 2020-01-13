@@ -3,19 +3,19 @@ layout: post
 title: TensorFlow models in Essentia
 category: news
 ---
-Audio Signal Processing and Music Information Retrieval are fields that evolve very fast and there is a tendency to rely more and more on Deep Learning solutions. For this reason, we see the necessity to support these solutions in Essentia to keep up with the state of the art. After having worked on this for the past months, we are delighted to present you a new set of algorithms and models that employ TensorFlow in Essentia! These algorithms are suited for inference tasks and offer flexibility of use, easy extensibility, and (in some cases) real-time inference. 
+Audio Signal Processing and Music Information Retrieval evolve very fast and there is a tendency to rely more and more on Deep Learning solutions. For this reason, we see the necessity to support these solutions in Essentia to keep up with the state of the art. After having worked on this for the past months, we are delighted to present you a new set of algorithms and models that employ TensorFlow in Essentia. These algorithms are suited for inference tasks and offer the flexibility of use, easy extensibility, and (in some cases) real-time inference.
 
 In this post, we will show how to install Essentia with TensorFlow support, how to prepare your pre-trained models and how to use them for prediction in both streaming and standard modes.
-For now, these steps are only valid for Linux. Nevertheless, we are planning to support other platforms soon.
+For now, these steps are only valid for Linux. Nevertheless, we are planning to support other platforms too.
 
-# Installing Essentia with TensorFlow
-## From PyPI wheels
-For convenience, we have built Python 3 wheels for Linux that can be installed from `pip`. These wheels are based in TensorFlow 1.15.
+## Installing Essentia with TensorFlow
+### From PyPI wheels
+For convenience, we have built special Python 3 Linux wheels for using Essentia with TensorFlow that can be installed with `pip`. These wheels include the required shared library for TensorFlow 1.15.
 ```sh
 pip install essentia-tensorflow
 ```
-## Building Essentia from source
-A more flexible option is to build the library from source. This way we have the freedom to choose the TensorFlow version to use. In our case, we keep using version 1.15 for compatibility with our models.
+### Building Essentia from source
+A more flexible option is to build the library from source. This way we have the freedom to choose the TensorFlow version to use, which may be useful to ensure compatibility for certain models. In this case, we keep using version 1.15.
 1. Install TensorFlow:
 ```bash
 pip install tensorflow==1.15.0
@@ -28,7 +28,7 @@ git clone https://github.com/MTG/essentia.git
 ```sh
 cd essentia && src/3rdparty/tensorflow/setup_from_python.sh
 ```
-4. Install the [dependancies](https://essentia.upf.edu/installing.html#installing-dependencies-on-linux) for Essentia with Python 3:
+4. Install the [dependencies](https://essentia.upf.edu/installing.html#installing-dependencies-on-linux) for Essentia with Python 3:
 ```sh
 sudo apt-get install build-essential libyaml-dev libfftw3-dev libavcodec-dev libavformat-dev libavutil-dev libavresample-dev python-dev libsamplerate0-dev libtag1-dev libchromaprint-dev python-six python3-dev python3-numpy-dev python3-numpy python3-yaml
 ```
@@ -46,9 +46,10 @@ python3 waf install
 ```
 
 ## Auto-tagging with musiCNN in Streaming mode
-As an example, let's try to use [musiCNN](https://github.com/jordipons/musicnn), a pre-trained auto-tagging model based on Convolutional Neural Networks (CNNs). There are versions trained on different datasets. In this case, we will consider the one relying on the Million Song Dataset that predicts the [top 50 tags of last.fm](http://millionsongdataset.com/lastfm/). Here we are reproducing this [blogpost](https://towardsdatascience.com/musicnn-5d1a5883989b) as a demonstration of how simple it is to incorporate a model into our framework.
-All we need is to get is the [model in Protobuf format](https://essentia.upf.edu/models/autotagging/MSD_musicnn_frozen_small.pb), its labels and the names of the input and output layers
-(if the names of the layers are not supplied there are plenty of on-line resources explaining how to [inspect the model](https://medium.com/@daj/how-to-inspect-a-pre-trained-tensorflow-model-5fd2ee79ced0) to get those):
+As an example, let's try to use [musiCNN](https://github.com/jordipons/musicnn), a pre-trained auto-tagging model based on Convolutional Neural Networks (CNNs). There are versions trained on different datasets. In this case, we will consider the model relying on [the subset of Million Song Dataset annotated by last.fm tags](http://millionsongdataset.com/lastfm/) that was trained on the top 50 tags.
+
+Here we are reproducing this [blogpost](https://towardsdatascience.com/musicnn-5d1a5883989b) as a demonstration of how simple it is to incorporate a model into our framework.
+All we need is to get the [model in Protobuf format](https://essentia.upf.edu/models/autotagging/MSD_musicnn_frozen_small.pb) (we provide more pre-made models on [our webpage](https://essentia.upf.edu/documentation/models/)) and obtain its labels and the names of the input and output layers. If the names of the layers are not supplied there are plenty of online resources explaining how to [inspect the model](https://medium.com/@daj/how-to-inspect-a-pre-trained-tensorflow-model-5fd2ee79ced0) to get those.
 
 
 ```python
@@ -58,9 +59,7 @@ output_layer = 'model/Sigmoid'
 msd_labels = ['rock','pop','alternative','indie','electronic','female vocalists','dance','00s','alternative rock','jazz','beautiful','metal','chillout','male vocalists','classic rock','soul','indie rock','Mellow','electronica','80s','folk','90s','chill','instrumental','punk','oldies','blues','hard rock','ambient','acoustic','experimental','female vocalist','guitar','Hip-Hop','70s','party','country','easy listening','sexy','catchy','funk','electro','heavy metal','Progressive rock','60s','rnb','indie pop','sad','House','happy']
 ```
 
-We provide more pre-made models on [our webpage](https://essentia.upf.edu/documentation/models/).
-
-One of the keys to making predictions faster is the use of our C++ extractor. Essentia's mel-spectrogram offers parameters that make it possible to reproduce the features from most of the well-known audio analysis libraries. In this case, we are reproducing the training features computed with [Librosa](https://librosa.github.io/):
+One of the keys to making predictions faster is the use of our C++ extractor. Essentia's algorithm for mel-spectrogram offers parameters that make it possible to reproduce the features from most of the well-known audio analysis libraries. In this case, we are reproducing the training features that [were computed with Librosa](https://github.com/jordipons/musicnn/blob/master/musicnn/extractor.py):
 
 
 ```python
@@ -68,16 +67,18 @@ One of the keys to making predictions faster is the use of our C++ extractor. Es
 sampleRate = 16000
 frameSize=512
 hopSize=256
-patchSize = 187
 
 # mel bands parameters
 numberBands=96
 weighting='linear'
 warpingFormula='slaneyMel'
 normalize='unit_tri'
+
+# model parameters
+patchSize = 187
 ```
 
-First of all, we instantiate the required algorithms:
+First of all, we instantiate the required algorithms using the [streaming mode](https://essentia.upf.edu/essentia_python_tutorial.html#using-essentia-in-streaming-mode) of Essentia:
 
 
 ```python
@@ -86,6 +87,7 @@ from essentia import Pool, run
 
 filename = 'your/amazing/song.mp3'
 
+# Algorithms for mel-spectrogram computation
 audio = MonoLoader(filename=filename, sampleRate=sampleRate)
 
 fc = FrameCutter(frameSize=frameSize, hopSize=hopSize)
@@ -100,24 +102,33 @@ mel = MelBands(numberBands=numberBands, sampleRate=sampleRate,
                weighting=weighting, normalize=normalize,
                warpingFormula=warpingFormula)
 
+# Algorithms for logarithmic compression of mel-spectrograms
 shift = UnaryOperator(shift=1, scale=10000)
 
 comp = UnaryOperator(type='log10')
 
+# This algorithm cuts the mel-spectrograms into patches
+# according to the model's input size and stores them in a data
+# type compatible with TensorFlow
 vtt = VectorRealToTensor(shape=[1, 1, patchSize, numberBands])
 
+# Auxiliar algorithm to store tensors into pools
 ttp = TensorToPool(namespace=input_layer)
 
+# The core TensorFlow wrapper algorithm operates on pools
+# to accept a variable number of inputs and outputs
 tfp = TensorflowPredict(graphFilename=modelName,
                         inputs=[input_layer],
                         outputs=[output_layer],
                         isTraining=False,
                         isTrainingName="model/Placeholder_1")
 
+# Algorithms to retrieve the predictions from the wrapper
 ptt = PoolToTensor(namespace=output_layer)
 
 ttv = TensorToVectorReal()
 
+# Another pool to store output predictions
 pool = Pool()
 ```
 
@@ -132,12 +143,14 @@ spec.spectrum  >>  mel.spectrum
 mel.bands      >>  shift.array
 shift.array    >>  comp.array
 comp.array     >>  vtt.frame
-comp.array     >>  (pool, "melbands")
 vtt.tensor     >>  ttp.tensor
 ttp.pool       >>  tfp.poolIn
 tfp.poolOut    >>  ptt.pool
 ptt.tensor     >>  ttv.tensor
 ttv.frame      >>  (pool, output_layer)
+
+# Store mel-spectrograms to reuse them later in this tutorial
+comp.array     >>  (pool, "melbands")
 ```
 
 Now we can run the Network and measure the prediction time:
@@ -156,7 +169,7 @@ print('Prediction time: {:.2f}s'.format(time() - start_time))
     Prediction time: 3.62s
 
 
-Now let's check what are the most likely tags in this song by averaging the predictions over the time axis:
+Now let's check what are the most likely tags in this song by averaging the predictions over the time:
 
 
 ```python
@@ -174,7 +187,7 @@ for i, l  in enumerate(np.mean(pool[output_layer],
     3: classic rock
 
 
-Also we can see the evolution of tags over time, also known as the taggram:
+Also, we can see the evolution of tag activations over time in a *taggram* where columns correspond to consecutive input patches:
 
 
 ```python
@@ -189,9 +202,9 @@ _ = plt.yticks(np.arange(50), msd_labels, fontsize=11)
 
 ![png]({{ site.baseurl }}/assets/tensorflow-models-in-essentia/taggram.png)
 
-# Standard mode
+## Standard mode
 
-The standard mode is an alternative to use the new algorithms where they are called as regular functions. This provides more flexibility in order to integrate them with a 3rd-party code in Python:
+The new algorithms are also available in the [standard mode](https://essentia.upf.edu/essentia_python_tutorial.html#using-essentia-in-standard-mode) where they can be called as regular functions. This provides more flexibility in order to integrate them with a 3rd-party code in Python:
 
 
 ```python
@@ -206,16 +219,15 @@ predict = es.TensorflowPredict(graphFilename=modelName,
 in_pool = Pool()
 ```
 
-In this example we'll take adventage of the previusly computed features:
+In this example we'll take advantage of the previously computed mel-spectrograms:
 
 
 ```python
 bands = pool['melbands']
-discard = bands.shape[0] % patchSize # Would not fit into the patch.
+discard = bands.shape[0] % patchSize  # Would not fit into the patch.
 
 bands = np.reshape(bands[:-discard,:], [-1, patchSize, numberBands])
 batch = np.expand_dims(bands, 2)
-
 
 in_pool.set('model/Placeholder', batch)
 
@@ -233,7 +245,7 @@ for i, l in enumerate(np.mean(out_pool[output_layer].squeeze(),
     3: classic rock
 
 
-# How fast is it?
+## How fast is it?
 Let's compare with the original Python implementation:
 
 
@@ -258,9 +270,9 @@ print(out)
      - classic rock
 
 
-Which is more than 2 times the time it took in Essentia. Great!
+Which is more than two times the time it took in Essentia. Great!
 
-# Using TensorFlow frozen models
+## Using TensorFlow frozen models
 In order to maximize efficiency, we only support frozen TensorFlow models. By freezing a model its variables are converted into constant values allowing for some optimizations.
 
 Frozen models are easy to generate given a TensorFlow architecture and its weights. In our case, we have used the following script where our architecture is defined on an external method `DEFINE_YOUR_ARCHITECTURE()` and the weights are loaded from a `CHECKPOINT_FOLDER/`:
