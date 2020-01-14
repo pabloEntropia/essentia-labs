@@ -10,10 +10,12 @@ For now, these steps are only valid for Linux. Nevertheless, we are planning to 
 
 ## Installing Essentia with TensorFlow
 ### From PyPI wheels
-For convenience, we have built special Python 3 Linux wheels for using Essentia with TensorFlow that can be installed with `pip`. These wheels include the required shared library for TensorFlow 1.15.
+For convenience, we have built special Python 3 Linux wheels for using Essentia with TensorFlow that can be installed with `pip`. These wheels include the required shared library for TensorFlow 1.15. Note that a pip version ≥19.3 is required (you should be fine creating a new virtualenv environment as it will contain an appropriate pip version).
+
 ```sh
 pip install essentia-tensorflow
 ```
+
 ### Building Essentia from source
 A more flexible option is to build the library from source. This way we have the freedom to choose the TensorFlow version to use, which may be useful to ensure compatibility for certain models. In this case, we keep using version 1.15.
 1. Install TensorFlow:
