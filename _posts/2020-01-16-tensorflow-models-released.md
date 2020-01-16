@@ -121,7 +121,7 @@ Now that we have a clear idea of which models are available, let's exemplify som
 ### Auto-tagging
 In this case, we are replicating the behavior on our [previous post](https://mtg.github.io/essentia-labs//news/2019/10/19/tensorflow-models-in-essentia/). With the new algorithms, the code is reduced to just a couple of lines!
 
-``` Python
+```python
 import numpy as np
 from essentia.standard import *
 
@@ -155,7 +155,7 @@ for i, l in enumerate(np.mean(predictions, axis=0).argsort()[-top_n:][::-1], 1):
 ### Classification
 In this example, we are using the `rosamerica` classifier based on the VGGish embeddings. Note that we are using `TensorflowPredictVGGish` instead of `TensorflowPredictMusiCNN` so that the model is fed with the correct input features.
 
-``` Python
+```python
 import numpy as np
 from essentia.standard import *
 
@@ -189,7 +189,7 @@ speech: 0.001
 As the last example, let's use one of the models as a feature extractor by retrieving the output of the penultimate layer. This is done by setting the `output` parameter in the predictor algorithm.
 A list of the supported output layer is available on the `README` files [shipped with the models](https://essentia.upf.edu/models/).
 
-``` Python
+```python
 from essentia.standard import MonoLoader, TensorflowPredictMusiCNN
 
 
@@ -203,4 +203,4 @@ penultimate_layer = TensorflowPredictMusiCNN(graphFilename='MSD_musicnn_frozen_s
 ```
 
 
-![png]({{ site.baseurl }}/assets/tensorflow-models-relesed/penultimate_layer_feats.png)
+![png]({{ site.baseurl }}/assets/tensorflow-models-released/penultimate_layer_feats.png)
