@@ -5,29 +5,31 @@ category: news
 ---
 In our [last post](https://mtg.github.io/essentia-labs//news/2019/10/19/tensorflow-models-in-essentia/), we introduced the TensorFlow wrapper for Essentia. It can be used with virtually any TensorFlow model and here we present a collection of models we supply with Essentia out of the box.
 
-First, we prepared a set of pre-trained `auto-tagging models` achieving state of the art performance. Then, we used those models as feature extractors to generate a set of `transfer learning classifiers` trained on our in-house datasets.
+First, we prepared a set of pre-trained *auto-tagging models* achieving state
+of-the-art performance. Then, we used those models as feature extractors to
+generate a set of *transfer learning classifiers* trained on our in-house
+datasets.
 
-Along with the models we provide convenience algorithms that allow performing predictions in just a couple of lines. Also, we include C++ extractors that could be built statically to use as standalone executables.
+Along with the models we provide helper algorithms that allow performing predictions in just a couple of lines. Also, we include C++ extractors that could be built statically to use as standalone executables.
 
 ## Supplied models
 
 ### Auto-tagging models
-Our auto-tagging models were pre-trained as part of Jordi Pons' [Ph.D. Thesis](https://www.upf.edu/web/mdm-dtic/thesis/-/asset_publisher/vfmxwU8uwTZk/content/-phd-thesis-deep-neural-networks-for-music-and-audio-tagging) [1]. They were trained to predict the top 50 tags from [lastFm](https://www.last.fm). Check the [original repository](https://github.com/jordipons/musicnn-training) for more details about the training process.
+Our auto-tagging models were pre-trained as part of Jordi Pons' [Ph.D. Thesis](https://www.upf.edu/web/mdm-dtic/thesis/-/asset_publisher/vfmxwU8uwTZk/content/-phd-thesis-deep-neural-networks-for-music-and-audio-tagging) [1]. They were trained on two research datasets, [MSD](http://millionsongdataset.com/lastfm/) and [MTT](http://mirg.city.ac.uk/codeapps/the-magnatagatune-dataset), to predict top 50 tags therein. Check the [original repository](https://github.com/jordipons/musicnn-training) for more details about the training process.
 
-The following table shows the available architectures and the datasets used for training. For every model, its complexity is reported in terms of the number of trainable parameters. The models were evaluated using [standarized train/test splits](http://millionsongdataset.com/pages/tasks-demos/index.html). The performance of the models is indicated in terms of the `ROC-AUC` and `PR-AUC` obtained in the test split as it is common for tagger systems.
+The following table shows the available architectures and the datasets used for training. For every model, its complexity is reported in terms of the number of trainable parameters. The models were trained and evaluated using the standardized train/test splits proposed for these datasets in research. The performance of the models is indicated in terms of `ROC-AUC` and `PR-AUC` obtained on the test splits.
 
 | Architecture | Dataset | Params. | ROC-AUC | PR-AUC | Download link |
 |---|---|---|---|---|---|
 | MusiCNN | MSD | 790k | 0.88 | 0.29 | [msd-musicnn](https://essentia.upf.edu/models/autotagging/MSD_musicnn_frozen_small.pb) |
-| MusiCNN | MTT | 790k | 0.91 | 0.38 | [msd-vgg](https://essentia.upf.edu/models/autotagging/MTT_musicnn_frozen_small.pb) |
-| VGG     | MSD | 605k | 0.88 | 0.28 | [mtt-musicnn](https://essentia.upf.edu/models/autotagging/MSD_vgg_frozen_small.pb) |
+| MusiCNN | MTT | 790k | 0.91 | 0.38 | [mtt-musicnn](https://essentia.upf.edu/models/autotagging/MTT_musicnn_frozen_small.pb) |
+| VGG     | MSD | 605k | 0.88 | 0.28 | [msd-vgg](https://essentia.upf.edu/models/autotagging/MSD_vgg_frozen_small.pb) |
 | VGG     | MTT | 605k | 0.90 | 0.38 | [mtt-vgg](https://essentia.upf.edu/models/autotagging/MTT_vgg_frozen_small.pb) |
 
 ### Transfer learning classifiers
-In a transfer learning schema, a model is first trained on a source task (typically with a greater amount of available data) to leverage the obtained knowledge in a smaller target task. In this case, we considered the aforementioned MusiCNN models and a big VGG-like ([VGGish](https://github.com/tensorflow/models/tree/master/research/audioset/vggish)) model as source tasks. As target tasks, we considered our in-house classification datasets explained below. We use the penultimate layer of the source task models as feature extractors for small classifiers consisting of 2 fully connected layers.
+In transfer learning, a model is first trained on a source task (typically with a greater amount of available data) to leverage the obtained knowledge in a smaller target task. In this case, we considered the aforementioned MusiCNN models and a big VGG-like ([VGGish](https://github.com/tensorflow/models/tree/master/research/audioset/vggish)) model as source tasks. As target tasks, we considered our in-house classification datasets listed below. We use the penultimate layer of the source task models as feature extractors for small classifiers consisting of two fully connected layers.
 
-
-The following tables divide our classifiers into *genre*, *mood* and *miscellaneous* tasks. For each classifier, its source task can be seen as a combination of the architecture and the training dataset used. Its complexity is reported in terms of the number of trainable parameters. The performance of each model is measured in terms of normalized accuracy (Acc.) in a 5-fold cross-validation experiment.
+The following tables present all trained classifiers in *genre*, *mood* and *miscellaneous* task categories. For each classifier, its source task name represents a combination of the architecture and the training dataset used. Its complexity is reported in terms of the number of trainable parameters. The performance of each model is measured in terms of normalized accuracy (Acc.) in a 5-fold cross-validation experiment conducted before the final classifier model was trained on all data.
 
 #### Genre
 
@@ -91,12 +93,12 @@ The following tables divide our classifiers into *genre*, *mood* and *miscellane
 
 ### Architecture details
   - [MusiCNN](https://github.com/jordipons/musicnn) is a musically-motivated Convolutional Neural Network. It uses vertical and horizontal convolutional filters aiming to capture timbral and temporal patterns, respectively. The model contains 6 layers and 790k parameters.
-  - **VGG** is an architecture from computer vision based on a deep stack of 3X3 convolutional filters commonly used. It contains 5 layers with 128 filters each. Batch normalization and dropout are applied before each layer. The model has 605k trainable parameters. We are using [Jordi Pon's implementation](https://github.com/jordipons/musicnn).
+  - **VGG** is an architecture from computer vision based on a deep stack of commonly used 3x3 convolutional filters. It contains 5 layers with 128 filters each. Batch normalization and dropout are applied before each layer. The model has 605k trainable parameters. We are using the [implementation by Jordi Pons](https://github.com/jordipons/musicnn).
   - [VGGish](https://github.com/tensorflow/models/tree/master/research/audioset) [2, 3] follows the configuration E from the original implementation for computer vision, with the difference that the number of output units is set to 3087. This model has 62 million parameters.
 
 ### Datasets details
-  - [MSD](http://millionsongdataset.com/lastfm) contains 200k tracks from the train set of the publicly available Million Song Dataset (MSD) annotated by the 50 Lastfm tags most frequent in the dataset.
-  - [MTT](http://mirg.city.ac.uk/codeapps/the-magnatagatune-dataset) contains data collected using the TagATune game and music from the Magnatune label. It contains 25k tracks.
+  - [MSD](http://millionsongdataset.com/lastfm) contains 200k tracks from the train set of the publicly available Million Song Dataset (MSD) annotated by tags from [Last.fm](https://www.last.fm). Only top 50 tags are used.
+  - [MTT](http://mirg.city.ac.uk/codeapps/the-magnatagatune-dataset) contains 25k tracks from Magnatune with tags by human annotators. Only top 50 tags are used.
   - [AudioSet](https://research.google.com/audioset/) contains 1.8 million audio clips from Youtube annotated with the AudioSet taxonomy, not specific to music.
   - **MTG in-house datasets** are a collection of small, highly curated datasets used for training classifiers. [A set of SVM classifiers](https://acousticbrainz.org/datasets/accuracy) based on these datasets is also available.
   
@@ -167,7 +169,7 @@ for i, l in enumerate(np.mean(predictions, axis=0).argsort()[-top_n:][::-1], 1):
 ```
 
 ### Classification
-In this example, we are using our `rosamerica` classifier based on the VGGish embeddings. Note that we are using `TensorflowPredictVGGish` instead of `TensorflowPredictMusiCNN` so that the model is fed with the correct input features.
+In this example, we are using our `genre_rosamerica` classifier based on the VGGish embeddings. Note that this time we are using `TensorflowPredictVGGish` instead of `TensorflowPredictMusiCNN` so that the model is fed with the correct input features.
 
 ```python
 import numpy as np
