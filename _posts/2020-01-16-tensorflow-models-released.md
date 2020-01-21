@@ -3,7 +3,7 @@ layout: post
 title: A collection of TensorFlow models for Essentia
 category: news
 ---
-In our [last post](https://mtg.github.io/essentia-labs//news/2019/10/19/tensorflow-models-in-essentia/), we introduced the TensorFlow wrapper for Essentia. It can be used with virtually any TensorFlow model and here we present a collection of models we supply with Essentia out of box.
+In our [last post](https://mtg.github.io/essentia-labs//news/2019/10/19/tensorflow-models-in-essentia/), we introduced the TensorFlow wrapper for Essentia. It can be used with virtually any TensorFlow model and here we present a collection of models we supply with Essentia out of the box.
 
 First, we prepared a set of pre-trained `auto-tagging models` achieving state of the art performance. Then, we used those models as feature extractors to generate a set of `transfer learning classifiers` trained on our in-house datasets.
 
@@ -12,99 +12,111 @@ Along with the models we provide convenience algorithms that allow performing pr
 ## Supplied models
 
 ### Auto-tagging models
-Our current auto-tagging were pre-trained as part of Jordi Pons' [Ph.D. Thesis](https://www.upf.edu/web/mdm-dtic/thesis/-/asset_publisher/vfmxwU8uwTZk/content/-phd-thesis-deep-neural-networks-for-music-and-audio-tagging). They were trained to predict the top 50 tags from [lastFm](https://www.last.fm). Check the [original repository](https://github.com/jordipons/musicnn-training) for more details about the training process.
+Our auto-tagging models were pre-trained as part of Jordi Pons' [Ph.D. Thesis](https://www.upf.edu/web/mdm-dtic/thesis/-/asset_publisher/vfmxwU8uwTZk/content/-phd-thesis-deep-neural-networks-for-music-and-audio-tagging) [1]. They were trained to predict the top 50 tags from [lastFm](https://www.last.fm). Check the [original repository](https://github.com/jordipons/musicnn-training) for more details about the training process.
 
-The following table shows the available architectures and the datasets used for training. For every model, its complexity is reported in terms of the number of trainable parameters. The models were evaluated using [standarized train/test splits](http://millionsongdataset.com/pages/tasks-demos/index.html). The performance of the models is indicated in terms of `ROC-AUC` and `PR-AUC` obtained in the test split as it is common for tagger systems.
+The following table shows the available architectures and the datasets used for training. For every model, its complexity is reported in terms of the number of trainable parameters. The models were evaluated using [standarized train/test splits](http://millionsongdataset.com/pages/tasks-demos/index.html). The performance of the models is indicated in terms of the `ROC-AUC` and `PR-AUC` obtained in the test split as it is common for tagger systems.
 
 | Architecture | Dataset | Params. | ROC-AUC | PR-AUC | Download link |
 |---|---|---|---|---|---|
-| MusiCNN | MSD | 790k | 0.88 | 0.29 | [MSD_musicnn_frozen_small](https://essentia.upf.edu/models/autotagging/MSD_musicnn_frozen_small.pb) |
-| MusiCNN | MTT | 790k | 0.91 | 0.38 | [MSD_vgg_frozen_small](https://essentia.upf.edu/models/autotagging/MTT_musicnn_frozen_small.pb) |
-| VGG     | MSD | 605k | 0.88 | 0.28 | [MTT_musicnn_frozen_small](https://essentia.upf.edu/models/autotagging/MSD_vgg_frozen_small.pb) |
-| VGG     | MTT | 605k | 0.90 | 0.38 | [MTT_vgg_frozen_small](https://essentia.upf.edu/models/autotagging/MTT_vgg_frozen_small.pb) |
+| MusiCNN | MSD | 790k | 0.88 | 0.29 | [msd-musicnn](https://essentia.upf.edu/models/autotagging/MSD_musicnn_frozen_small.pb) |
+| MusiCNN | MTT | 790k | 0.91 | 0.38 | [msd-vgg](https://essentia.upf.edu/models/autotagging/MTT_musicnn_frozen_small.pb) |
+| VGG     | MSD | 605k | 0.88 | 0.28 | [mtt-musicnn](https://essentia.upf.edu/models/autotagging/MSD_vgg_frozen_small.pb) |
+| VGG     | MTT | 605k | 0.90 | 0.38 | [mtt-vgg](https://essentia.upf.edu/models/autotagging/MTT_vgg_frozen_small.pb) |
 
 ### Transfer learning classifiers
-In a transfer learning schema, a model is first trained on a source task (typically with greater amount of available data) to leverage the obtained knowledge in a smaller target task. In this case, we considered the aforementioned MusiCNN models and a big VGG-like (VGGish) model as source tasks. As target tasks, we considered our in-house classification datasets explained below. We use the penultimate layer of the source task models as feature extractors for small classifiers consisting of 2 fully connected layers.
+In a transfer learning schema, a model is first trained on a source task (typically with a greater amount of available data) to leverage the obtained knowledge in a smaller target task. In this case, we considered the aforementioned MusiCNN models and a big VGG-like ([VGGish](https://github.com/tensorflow/models/tree/master/research/audioset/vggish)) model as source tasks. As target tasks, we considered our in-house classification datasets explained below. We use the penultimate layer of the source task models as feature extractors for small classifiers consisting of 2 fully connected layers.
 
 
-For each classifier, the following table shows its source task as a combination of the architecture and the training dataset used. Its complexity is reported in terms of the number of trainable parameters. The performance of each model is measured in terms of normalized accuracy in a 5-fold cross-validation experiment.
+The following tables divide our classifiers into *genre*, *mood* and *miscellaneous* tasks. For each classifier, its source task can be seen as a combination of the architecture and the training dataset used. Its complexity is reported in terms of the number of trainable parameters. The performance of each model is measured in terms of normalized accuracy (Acc.) in a 5-fold cross-validation experiment.
 
-| Source task | Target task | Params. | Norm acc. | Download link |
+#### Genre
+
+| Source task | Target task | Params. | Acc. | Download link |
 |---|---|---|---|---|
-| MusiCNN-MSD      | danceability       | 790k | 0.93 | [danceability_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/danceability/danceability_musicnn_msd.pb) |
-| MusiCNN-MSD      | gender             | 790k | 0.88 | [gender_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/gender/gender_musicnn_msd.pb) |
-| MusiCNN-MSD      | genre_dortmund     | 790k | 0.51 | [genre_dortmund_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_dortmund/genre_dortmund_musicnn_msd.pb) |
-| MusiCNN-MSD      | genre_electronic   | 790k | 0.95 | [genre_electronic_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_electronic/genre_electronic_musicnn_msd.pb) |
-| MusiCNN-MSD      | genre_rosamerica   | 790k | 0.92 | [genre_rosamerica_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_rosamerica/genre_rosamerica_musicnn_msd.pb) |
-| MusiCNN-MSD      | genre_tzanetakis   | 790k | 0.83 | [genre_tzanetakis_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_tzanetakis/genre_tzanetakis_musicnn_msd.pb) |
-| MusiCNN-MSD      | mood_acoustic      | 790k | 0.90 | [mood_acoustic_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_acoustic/mood_acoustic_musicnn_msd.pb) |
-| MusiCNN-MSD      | mood_aggressive    | 790k | 0.95 | [mood_aggressive_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_aggressive/mood_aggressive_musicnn_msd.pb) |
-| MusiCNN-MSD      | mood_electronic    | 790k | 0.95 | [mood_electronic_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_electronic/mood_electronic_musicnn_msd.pb) |
-| MusiCNN-MSD      | mood_happy         | 790k | 0.81 | [mood_happy_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_happy/mood_happy_musicnn_msd.pb) |
-| MusiCNN-MSD      | mood_party         | 790k | 0.89 | [mood_party_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_party/mood_party_musicnn_msd.pb) |
-| MusiCNN-MSD      | mood_relaxed       | 790k | 0.90 | [mood_relaxed_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_relaxed/mood_relaxed_musicnn_msd.pb) |
-| MusiCNN-MSD      | mood_sad           | 790k | 0.86 | [mood_sad_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_sad/mood_sad_musicnn_msd.pb) |
-| MusiCNN-MSD      | tonal_atonal       | 790k | 0.60 | [tonal_atonal_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/tonal_atonal/tonal_atonal_musicnn_msd.pb) |
-| MusiCNN-MSD      | voice_instrumental | 790k | 0.98 | [voice_instrumental_musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/voice_instrumental/voice_instrumental_musicnn_msd.pb) |
-| MusiCNN-MTT      | danceability       | 790k | 0.91 | [danceability_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/danceability/danceability_musicnn_mtt.pb) |
-| MusiCNN-MTT      | gender             | 790k | 0.87 | [gender_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/gender/gender_musicnn_mtt.pb) |
-| MusiCNN-MTT      | genre_dortmund     | 790k | 0.44 | [genre_dortmund_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_dortmund/genre_dortmund_musicnn_mtt.pb) |
-| MusiCNN-MTT      | genre_electronic   | 790k | 0.71 | [genre_electronic_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_electronic/genre_electronic_musicnn_mtt.pb) |
-| MusiCNN-MTT      | genre_rosamerica   | 790k | 0.92 | [genre_rosamerica_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_rosamerica/genre_rosamerica_musicnn_mtt.pb) |
-| MusiCNN-MTT      | genre_tzanetakis   | 790k | 0.80 | [genre_tzanetakis_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_tzanetakis/genre_tzanetakis_musicnn_mtt.pb) |
-| MusiCNN-MTT      | mood_acoustic      | 790k | 0.93 | [mood_acoustic_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_acoustic/mood_acoustic_musicnn_mtt.pb) |
-| MusiCNN-MTT      | mood_aggressive    | 790k | 0.96 | [mood_aggressive_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_aggressive/mood_aggressive_musicnn_mtt.pb) |
-| MusiCNN-MTT      | mood_electronic    | 790k | 0.91 | [mood_electronic_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_electronic/mood_electronic_musicnn_mtt.pb) |
-| MusiCNN-MTT      | mood_happy         | 790k | 0.79 | [mood_happy_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_happy/mood_happy_musicnn_mtt.pb) |
-| MusiCNN-MTT      | mood_party         | 790k | 0.92 | [mood_party_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_party/mood_party_musicnn_mtt.pb) |
-| MusiCNN-MTT      | mood_relaxed       | 790k | 0.88 | [mood_relaxed_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_relaxed/mood_relaxed_musicnn_mtt.pb) |
-| MusiCNN-MTT      | mood_sad           | 790k | 0.85 | [mood_sad_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_sad/mood_sad_musicnn_mtt.pb) |
-| MusiCNN-MTT      | tonal_atonal       | 790k | 0.91 | [tonal_atonal_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/tonal_atonal/tonal_atonal_musicnn_mtt.pb) |
-| MusiCNN-MTT      | voice_instrumental | 790k | 0.98 | [voice_instrumental_musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/voice_instrumental/voice_instrumental_musicnn_mtt.pb) |
-| VGGish-AudioSet | danceability        | 62M  | 0.94 | [danceability_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/danceability/danceability_vggish_audioset.pb) |
-| VGGish-AudioSet | gender              | 62M  | 0.84 | [gender_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/gender/gender_vggish_audioset.pb) |
-| VGGish-AudioSet | genre_dortmund      | 62M  | 0.52 | [genre_dortmund_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_dortmund/genre_dortmund_vggish_audioset.pb) |
-| VGGish-AudioSet | genre_electronic    | 62M  | 0.93 | [genre_electronic_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_electronic/genre_electronic_vggish_audioset.pb) |
-| VGGish-AudioSet | genre_rosamerica    | 62M  | 0.94 | [genre_rosamerica_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_rosamerica/genre_rosamerica_vggish_audioset.pb) |
-| VGGish-AudioSet | genre_tzanetakis    | 62M  | 0.86 | [genre_tzanetakis_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_tzanetakis/genre_tzanetakis_vggish_audioset.pb) |
-| VGGish-AudioSet | mood_acoustic       | 62M  | 0.94 | [mood_acoustic_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_acoustic/mood_acoustic_vggish_audioset.pb) |
-| VGGish-AudioSet | mood_aggressive     | 62M  | 0.98 | [mood_aggressive_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_aggressive/mood_aggressive_vggish_audioset.pb) |
-| VGGish-AudioSet | mood_electronic     | 62M  | 0.93 | [mood_electronic_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_electronic/mood_electronic_vggish_audioset.pb) |
-| VGGish-AudioSet | mood_happy          | 62M  | 0.86 | [mood_happy_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_happy/mood_happy_vggish_audioset.pb) |
-| VGGish-AudioSet | mood_party          | 62M  | 0.91 | [mood_party_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_party/mood_party_vggish_audioset.pb) |
-| VGGish-AudioSet | mood_relaxed        | 62M  | 0.89 | [mood_relaxed_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_relaxed/mood_relaxed_vggish_audioset.pb) |
-| VGGish-AudioSet | mood_sad            | 62M  | 0.89 | [mood_sad_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_sad/mood_sad_vggish_audioset.pb) |
-| VGGish-AudioSet | tonal_atonal        | 62M  | 0.97 | [tonal_atonal_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/tonal_atonal/tonal_atonal_vggish_audioset.pb) |
-| VGGish-AudioSet | voice_instrumental  | 62M  | 0.98 | [voice_instrumental_vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/voice_instrumental/voice_instrumental_vggish_audioset.pb) |
+| MusiCNN_MSD      | genre_dortmund     | 790k | 0.51 | [genre_dortmund-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_dortmund/genre_dortmund-musicnn_msd.pb) |
+| MusiCNN_MSD      | genre_electronic   | 790k | 0.95 | [genre_electronic-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_electronic/genre_electronic-musicnn_msd.pb) |
+| MusiCNN_MSD      | genre_rosamerica   | 790k | 0.92 | [genre_rosamerica-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_rosamerica/genre_rosamerica-musicnn_msd.pb) |
+| MusiCNN_MSD      | genre_tzanetakis   | 790k | 0.83 | [genre_tzanetakis-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_tzanetakis/genre_tzanetakis-musicnn_msd.pb) |
+| MusiCNN_MTT      | genre_dortmund     | 790k | 0.44 | [genre_dortmund-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_dortmund/genre_dortmund-musicnn_mtt.pb) |
+| MusiCNN_MTT      | genre_electronic   | 790k | 0.71 | [genre_electronic-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_electronic/genre_electronic-musicnn_mtt.pb) |
+| MusiCNN_MTT      | genre_rosamerica   | 790k | 0.92 | [genre_rosamerica-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_rosamerica/genre_rosamerica-musicnn_mtt.pb) |
+| MusiCNN_MTT      | genre_tzanetakis   | 790k | 0.80 | [genre_tzanetakis-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_tzanetakis/genre_tzanetakis-musicnn_mtt.pb) |
+| VGGish_AudioSet | genre_dortmund      | 62M  | 0.52 | [genre_dortmund-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_dortmund/genre_dortmund-vggish_audioset.pb) |
+| VGGish_AudioSet | genre_electronic    | 62M  | 0.93 | [genre_electronic-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_electronic/genre_electronic-vggish_audioset.pb) |
+| VGGish_AudioSet | genre_rosamerica    | 62M  | 0.94 | [genre_rosamerica-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_rosamerica/genre_rosamerica-vggish_audioset.pb) |
+| VGGish_AudioSet | genre_tzanetakis    | 62M  | 0.86 | [genre_tzanetakis-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/genre_tzanetakis/genre_tzanetakis-vggish_audioset.pb) |
+
+#### Mood
+
+| Source task | Target task | Params. | Acc. | Download link |
+|---|---|---|---|---|
+| MusiCNN_MSD      | mood_acoustic      | 790k | 0.90 | [mood_acoustic-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_acoustic/mood_acoustic-musicnn_msd.pb) |
+| MusiCNN_MSD      | mood_aggressive    | 790k | 0.95 | [mood_aggressive-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_aggressive/mood_aggressive-musicnn_msd.pb) |
+| MusiCNN_MSD      | mood_electronic    | 790k | 0.95 | [mood_electronic-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_electronic/mood_electronic-musicnn_msd.pb) |
+| MusiCNN_MSD      | mood_happy         | 790k | 0.81 | [mood_happy-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_happy/mood_happy-musicnn_msd.pb) |
+| MusiCNN_MSD      | mood_party         | 790k | 0.89 | [mood_party-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_party/mood_party-musicnn_msd.pb) |
+| MusiCNN_MSD      | mood_relaxed       | 790k | 0.90 | [mood_relaxed-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_relaxed/mood_relaxed-musicnn_msd.pb) |
+| MusiCNN_MSD      | mood_sad           | 790k | 0.86 | [mood_sad-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_sad/mood_sad-musicnn_msd.pb) |
+| MusiCNN_MTT      | mood_acoustic      | 790k | 0.93 | [mood_acoustic-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_acoustic/mood_acoustic-musicnn_mtt.pb) |
+| MusiCNN_MTT      | mood_aggressive    | 790k | 0.96 | [mood_aggressive-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_aggressive/mood_aggressive-musicnn_mtt.pb) |
+| MusiCNN_MTT      | mood_electronic    | 790k | 0.91 | [mood_electronic-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_electronic/mood_electronic-musicnn_mtt.pb) |
+| MusiCNN_MTT      | mood_happy         | 790k | 0.79 | [mood_happy-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_happy/mood_happy-musicnn_mtt.pb) |
+| MusiCNN_MTT      | mood_party         | 790k | 0.92 | [mood_party-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_party/mood_party-musicnn_mtt.pb) |
+| MusiCNN_MTT      | mood_relaxed       | 790k | 0.88 | [mood_relaxed-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_relaxed/mood_relaxed-musicnn_mtt.pb) |
+| MusiCNN_MTT      | mood_sad           | 790k | 0.85 | [mood_sad-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_sad/mood_sad-musicnn_mtt.pb) |
+| VGGish_AudioSet | mood_acoustic       | 62M  | 0.94 | [mood_acoustic-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_acoustic/mood_acoustic-vggish_audioset.pb) |
+| VGGish_AudioSet | mood_aggressive     | 62M  | 0.98 | [mood_aggressive-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_aggressive/mood_aggressive-vggish_audioset.pb) |
+| VGGish_AudioSet | mood_electronic     | 62M  | 0.93 | [mood_electronic-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_electronic/mood_electronic-vggish_audioset.pb) |
+| VGGish_AudioSet | mood_happy          | 62M  | 0.86 | [mood_happy-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_happy/mood_happy-vggish_audioset.pb) |
+| VGGish_AudioSet | mood_party          | 62M  | 0.91 | [mood_party-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_party/mood_party-vggish_audioset.pb) |
+| VGGish_AudioSet | mood_relaxed        | 62M  | 0.89 | [mood_relaxed-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_relaxed/mood_relaxed-vggish_audioset.pb) |
+| VGGish_AudioSet | mood_sad            | 62M  | 0.89 | [mood_sad-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/mood_sad/mood_sad-vggish_audioset.pb) |
+
+#### Miscellaneous
+
+| Source task | Target task | Params. | Acc. | Download link |
+|---|---|---|---|---|
+| MusiCNN_MSD      | danceability       | 790k | 0.93 | [danceability-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/danceability/danceability-musicnn_msd.pb) |
+| MusiCNN_MSD      | gender             | 790k | 0.88 | [gender-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/gender/gender-musicnn_msd.pb) |
+| MusiCNN_MSD      | tonal_atonal       | 790k | 0.60 | [tonal_atonal-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/tonal_atonal/tonal_atonal-musicnn_msd.pb) |
+| MusiCNN_MSD      | voice_instrumental | 790k | 0.98 | [voice_instrumental-musicnn_msd](https://essentia.upf.edu/models/transfer_learning_classifiers/voice_instrumental/voice_instrumental-musicnn_msd.pb) |
+| MusiCNN_MTT      | danceability       | 790k | 0.91 | [danceability-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/danceability/danceability-musicnn_mtt.pb) |
+| MusiCNN_MTT      | gender             | 790k | 0.87 | [gender-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/gender/gender-musicnn_mtt.pb) |
+| MusiCNN_MTT      | tonal_atonal       | 790k | 0.91 | [tonal_atonal-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/tonal_atonal/tonal_atonal-musicnn_mtt.pb) |
+| MusiCNN_MTT      | voice_instrumental | 790k | 0.98 | [voice_instrumental-musicnn_mtt](https://essentia.upf.edu/models/transfer_learning_classifiers/voice_instrumental/voice_instrumental-musicnn_mtt.pb) |
+| VGGish_AudioSet | danceability        | 62M  | 0.94 | [danceability-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/danceability/danceability-vggish_audioset.pb) |
+| VGGish_AudioSet | gender              | 62M  | 0.84 | [gender-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/gender/gender-vggish_audioset.pb) |
+| VGGish_AudioSet | tonal_atonal        | 62M  | 0.97 | [tonal_atonal-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/tonal_atonal/tonal_atonal-vggish_audioset.pb) |
+| VGGish_AudioSet | voice_instrumental  | 62M  | 0.98 | [voice_instrumental-vggish_audioset](https://essentia.upf.edu/models/transfer_learning_classifiers/voice_instrumental/voice_instrumental-vggish_audioset.pb) |
 
 ### Architecture details
   - [MusiCNN](https://github.com/jordipons/musicnn) is a musically-motivated Convolutional Neural Network. It uses vertical and horizontal convolutional filters aiming to capture timbral and temporal patterns, respectively. The model contains 6 layers and 790k parameters.
-  - [VGG]() is an architecture from computer vision based on a deep stack of 3X3 convolutional filters commonly used. It contains 5 layers with 128 filters each. Batch normalization and dropout are applied before each layer. The model has 605k trainable parameters. We are using [Jordi Pon's implementation](https://github.com/jordipons/musicnn)
-  - [VGGish](https://github.com/tensorflow/models/tree/master/research/audioset) follows the configuration E from the original implementation for computer vision, with the difference that the number of output units is set to 3087. This model has 62 million parameters.
+  - **VGG** is an architecture from computer vision based on a deep stack of 3X3 convolutional filters commonly used. It contains 5 layers with 128 filters each. Batch normalization and dropout are applied before each layer. The model has 605k trainable parameters. We are using [Jordi Pon's implementation](https://github.com/jordipons/musicnn).
+  - [VGGish](https://github.com/tensorflow/models/tree/master/research/audioset) [2, 3] follows the configuration E from the original implementation for computer vision, with the difference that the number of output units is set to 3087. This model has 62 million parameters.
 
 ### Datasets details
   - [MSD](http://millionsongdataset.com/lastfm) contains 200k tracks from the train set of the publicly available Million Song Dataset (MSD) annotated by the 50 Lastfm tags most frequent in the dataset.
   - [MTT](http://mirg.city.ac.uk/codeapps/the-magnatagatune-dataset) contains data collected using the TagATune game and music from the Magnatune label. It contains 25k tracks.
   - [AudioSet](https://research.google.com/audioset/) contains 1.8 million audio clips from Youtube annotated with the AudioSet taxonomy, not specific to music.
-  - **MTG in-house datasets** are a collection of small, highly curated datasets used for training classifiers. [A set of SVM classifiers](https://acousticbrainz.org/datasets/accuracy) based on these datsaets is also available.
+  - **MTG in-house datasets** are a collection of small, highly curated datasets used for training classifiers. [A set of SVM classifiers](https://acousticbrainz.org/datasets/accuracy) based on these datasets is also available.
   
 | Dataset            | Classes                                                                                                                     | Size           |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------|----------------|
-| genre-dortmund     | alternative, blues, electronic, folkcountry, funksoulrnb, jazz, pop, raphiphop, rock                                        | 1820 exc.      |
-| genre-gtzan        | blues, classic, country, disco, hip hop, jazz, metal, pop, reggae, rock                                                     | 1000 exc.      |
-| genre-rosamerica   | classic, dance, hip hop, jazz, pop, rhythm and blues, rock, speech                                                          | 400 ft.        |
-| genre-electronic   | ambient, dnb, house, techno, trance                                                                                         | 250 exc.       |
-| mood-acoustic      | acoustic, not acoustic                                                                                                      | 321 ft.        |
-| mood-electronic    | electronic, not electronic                                                                                                  | 332 ft./exc.   |
-| mood-aggressive    | aggressive, not aggressive                                                                                                  | 280 ft.        |
-| mood-relaxed       | not relaxed, relaxed                                                                                                        | 446 ft./exc.   |
-| mood-happy         | happy, not happy                                                                                                            | 302 exp.       |
-| mood-sad           | not sad, sad                                                                                                                | 230 ft./exc.   |
-| mood-party         | not party, party                                                                                                            | 349 exc.       |
-| danceability       | danceable, not dancable                                                                                                     | 306 ft.        |
-| voice/instrumental | voice, instrumental                                                                                                         | 1000 exc.      |
-| gender             | female, male                                                                                                                | 3311 ft.       |
-| tonal/atonal       | atonal, tonal                                                                                                               | 345 exc.       |
+| genre-dortmund     | alternative, blues, electronic, folkcountry, funksoulrnb, jazz, pop, raphiphop, rock                                        | 1820  |
+| genre-gtzan        | blues, classic, country, disco, hip hop, jazz, metal, pop, reggae, rock                                                     | 1000  |
+| genre-rosamerica   | classic, dance, hip hop, jazz, pop, rhythm and blues, rock, speech                                                          | 400   |
+| genre-electronic   | ambient, dnb, house, techno, trance                                                                                         | 250   |
+| mood-acoustic      | acoustic, not acoustic                                                                                                      | 321   |
+| mood-electronic    | electronic, not electronic                                                                                                  | 332   |
+| mood-aggressive    | aggressive, not aggressive                                                                                                  | 280   |
+| mood-relaxed       | not relaxed, relaxed                                                                                                        | 446   |
+| mood-happy         | happy, not happy                                                                                                            | 302   |
+| mood-sad           | not sad, sad                                                                                                                | 230   |
+| mood-party         | not party, party                                                                                                            | 349   |
+| danceability       | danceable, not dancable                                                                                                     | 306   |
+| voice/instrumental | voice, instrumental                                                                                                         | 1000  |
+| gender             | female, male                                                                                                                | 3311  |
+| tonal/atonal       | atonal, tonal                                                                                                               | 345   |
 
 ## Helper algorithms
 Algorithms for `MusiCNN` and `VGG` based models:
@@ -155,7 +167,7 @@ for i, l in enumerate(np.mean(predictions, axis=0).argsort()[-top_n:][::-1], 1):
 ```
 
 ### Classification
-In this example, we are using the `rosamerica` classifier based on the VGGish embeddings. Note that we are using `TensorflowPredictVGGish` instead of `TensorflowPredictMusiCNN` so that the model is fed with the correct input features.
+In this example, we are using our `rosamerica` classifier based on the VGGish embeddings. Note that we are using `TensorflowPredictVGGish` instead of `TensorflowPredictMusiCNN` so that the model is fed with the correct input features.
 
 ```python
 import numpy as np
@@ -169,7 +181,7 @@ sr = 16000
 audio = MonoLoader(filename='/your/amazong/song.wav', sampleRate=sr)()
 
 
-predictions = TensorflowPredictVGGish(graphFilename='genre_rosamerica_vggish_audioset.pb')(audio)
+predictions = TensorflowPredictVGGish(graphFilename='genre_rosamerica-vggish_audioset.pb')(audio)
 predictions = np.mean(predictions, axis=0)
 order = predictions.argsort()[::-1]
 for i in order:
@@ -207,3 +219,11 @@ penultimate_layer = TensorflowPredictMusiCNN(graphFilename='MSD_musicnn_frozen_s
 The following plot shows how these features look like:
 
 ![png]({{ site.baseurl }}/assets/tensorflow-models-released/penultimate_layer_feats.png)
+
+## References
+
+[1] Pons, J., & Serra, X. (2019). musicnn: Pre-trained convolutional neural networks for music audio tagging. arXiv preprint arXiv:1909.06654.
+
+[2] Gemmeke, J. et. al., AudioSet: An ontology and human-labelled dataset for audio events, ICASSP 2017.
+
+[3] Hershey, S. et. al., CNN Architectures for Large-Scale Audio Classification, ICASSP 2017
