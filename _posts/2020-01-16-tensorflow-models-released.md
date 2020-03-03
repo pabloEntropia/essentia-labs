@@ -217,7 +217,7 @@ from essentia.standard import MonoLoader, TensorflowPredictMusiCNN
 
 
 sr = 16000
-audio = MonoLoader(filename='/your/amazong/song.wav', sampleRate=sr)()
+audio = MonoLoader(filename='/your/amazing/song.wav', sampleRate=sr)()
 
 # Retrieve the output of the penultimate layer
 penultimate_layer = TensorflowPredictMusiCNN(graphFilename='msd-musicnn.pb',
