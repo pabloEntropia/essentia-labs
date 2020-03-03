@@ -220,8 +220,7 @@ sr = 16000
 audio = MonoLoader(filename='/your/amazing/song.wav', sampleRate=sr)()
 
 # Retrieve the output of the penultimate layer
-penultimate_layer = TensorflowPredictMusiCNN(graphFilename='msd-musicnn.pb',
-  output='model/dense_1/BiasAdd')(audio)
+penultimate_layer = TensorflowPredictMusiCNN(graphFilename='msd-musicnn.pb', output='model/dense_1/BiasAdd')(audio)
 
 ```
 The following plot shows how these features look like:
