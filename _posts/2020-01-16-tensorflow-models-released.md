@@ -156,8 +156,12 @@ predictions = TensorflowPredictMusiCNN(graphFilename='msd-musicnn.pb')(audio)
 # Retrieve the top_n tags
 top_n = 3
 
-# Take advantage of NumPy to average and sort the predictions
-for i, l in enumerate(np.mean(predictions, axis=0).argsort()[-top_n:][::-1], 1):
+# The shape of the predictions matrix is [n_patches, n_labels]
+# Take advantage of NumPy to average them over the time axis
+averaged_predictions = np.mean(predictions, axis=0)
+
+# Sort the predictions and get the top N
+for i, l in enumerate(averaged_predictions.argsort()[-top_n:][::-1], 1):
     print('{}: {}'.format(i, msd_labels[l]))
 
 ```
@@ -180,11 +184,13 @@ labels = ['classic', 'dance', 'hip hop', 'jazz',
           'pop', 'rnb', 'rock', 'speech']
 
 sr = 16000
-audio = MonoLoader(filename='/your/amazong/song.wav', sampleRate=sr)()
+audio = MonoLoader(filename='/your/amazing/song.wav', sampleRate=sr)()
 
+predictions = TensorflowPredictVGGish(graphFilename='genre_rosamerica-vggish-audioset.pb')(audio)
 
-predictions = TensorflowPredictVGGish(graphFilename='genre_electronic-vggish-audioset.pb')(audio)
+# Average predictions over the time axis
 predictions = np.mean(predictions, axis=0)
+
 order = predictions.argsort()[::-1]
 for i in order:
     print('{}: {:.3f}'.format(labels[i], predictions[i]))
