@@ -5,9 +5,7 @@ category: news
 ---
 
 
-Cover song identification or Version Identification is a task of identifying when two musical recordings are derived from the same music composition. A cover version of a song can be drastically different from the original recording. It may have variations in key, tempo, structure, melody, harmony, timbre, language and
-lyrics compared to its original version, which makes it a
-challenging task [1]. It is typically set as a query-retrieval task where the system retrieves a ranked list of possible covers of a given query song from a reference database. We recommend you reading [1] for more comprehhensive details of this task. 
+Cover song identification or Version Identification is a task of identifying when two musical recordings are derived from the same music composition. A cover version of a song can be drastically different from the original recording. It may have variations in key, tempo, structure, melody, harmony, timbre, language and lyrics compared to its original version, which makes it a challenging task [1]. It is typically set as a query-retrieval task where the system retrieves a ranked list of possible covers of a given query song from a reference database. We recommend you reading [1] for more comprehhensive details of this task. 
 
 Most of the state-of-the-art cover identification systems use pairwise comparison of two musical recordings to compute an similarity distance by using the following workflow.
 
@@ -200,8 +198,8 @@ score_matrix, distance = estd.CoverSongSimilarity(disOnset=0.5,
 
 # plot
 plt.title('Cover song similarity distance: %s' % distance)
-plt.xlabel('Yesterday accapella cover')
-plt.ylabel('Come together cover - Aerosmith')
+plt.ylabel('Yesterday accapella cover')
+plt.xlabel('Come together cover - Aerosmith')
 plt.imshow(score_matrix, origin='lower')
 ```
 
