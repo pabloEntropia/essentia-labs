@@ -5,35 +5,35 @@ category: news
 ---
 
 
-Cover song identification or Version Identification is a task of identifying when two musical recordings are derived from the same music composition. A cover version of a song can be drastically different from the original recording. It may have variations in key, tempo, structure, melody, harmony, timbre, language and lyrics compared to its original version, which makes it a challenging task [1]. It is typically set as a query-retrieval task where the system retrieves a ranked list of possible covers of a given query song from a reference database. We recommend you reading [1] for more comprehhensive details of this task. 
+`Cover Song Identification` or `Music Version Identification` is a task of identifying when two musical recordings are derived from the same music composition. A cover version of a song can be drastically different from the original recording. It may have variations in key, tempo, structure, melody, harmony, timbre, language and lyrics compared to its original version, which makes it a challenging task [1]. It is typically set as a query-retrieval task where the system retrieves a ranked list of possible covers of a given query song from a reference database. We recommend you reading [1] for more comprehensive details of this task. 
 
-Most of the state-of-the-art cover identification systems use pairwise comparison of two musical recordings to compute an similarity distance by using the following workflow.
+Most of the state-of-the-art cover identification systems use pairwise comparison of two musical recordings to compute a similarity distance by using the following workflow.
 
 
 - Tonal feature extraction using chroma features such as [`HPCP`](https://essentia.upf.edu/reference/std_HPCP.html).
-- Post-processing of the tonal features to achieve invariance (eg. Pitch) [3].
-- Computing cross-similarity between a pair of query and reference song tonal features [2], [4].
-- Local sub-sequence alignment to compute the pairwise cover song similarity distance [2], [3], [6].
+- Post-processing of the tonal features to achieve various invariance to musical facets (eg. Pitch invariance [5]).
+- Computing cross-similarity between a pair of query and reference song tonal features [2, 4].
+- Local sub-sequence alignment to compute the pairwise cover song similarity distance [2, 3, 6].
 
 
 Recently, we have implemented the following state-of-the-art pairwise cover song identification algorithms in Essentia providing an optimised open-source implementation for both offline and realtime use-cases.
 
-- [`CrossSimilarityMatrix`](https://essentia.upf.edu/reference/std_CrossSimilarityMatrix.html) : Compute euclidean cross-similarity between given two framewise feature arrays with an optional parameter for binarizing with a given threshold. This algorithm can be generically used for computing cross-similarity of any given input features.
+- [`CrossSimilarityMatrix`](https://essentia.upf.edu/reference/std_CrossSimilarityMatrix.html) : Compute euclidean cross-similarity between given two framewise feature arrays with an optional parameter to binarize with a given threshold. This is a generic algorithm that can be used for used for computing similarity between any given pair of 2D feature arrays. With parameter `binarize=True`, the output of this algorithm can be used along with local sub-sequence alignment algorithms such as `CoverSongSimilarity`. 
 
 
-- [`ChromaChrossSimilarity`](https://essentia.upf.edu/reference/std_ChromaCrossSimilarity.html) : Compute cross-similarity between a query and reference song frame-wise chroma features using cross recurrent plot [2] or OTI-based binay similarity matrix method [4].
+- [`ChromaChrossSimilarity`](https://essentia.upf.edu/reference/std_ChromaCrossSimilarity.html) : This algorithm specificaly computes cross-similarity between frame-wise chroma-based features of a query and reference song using cross recurrent plot [2] or OTI-based binary similarity matrix method [4]. With parameter `oti=True`, the algorithm tranpose the pitch of the reference song as of the query song using Optimal Transpose Index [5]. The algorithm always output an binary similarity matrix.
 
 
-- [`CoverSongSimilarity`](https://essentia.upf.edu/reference/std_CoverSongSimilarity.html) : Compute cover song similarity distance using various alignment constraints [2], [3] of Smith-Waterman sub-sequence alignment algorithm [6].
+- [`CoverSongSimilarity`](https://essentia.upf.edu/reference/std_CoverSongSimilarity.html) : Compute cover song similarity distance from an input binary simialrity matrix using various alignment constraints [2, 3] of Smith-Waterman local sub-sequence alignment algorithm [6]. 
 
 
-In the following sections, we will show how these music similarity and cover song identification algorithms can be used in both essentia standard and streaming mode workflows.
+In the coming sections, we show how these music similarity and cover song identification algorithms can be used in Essentia in both standard and streaming modes.
 
 ## Standard mode computation
 
 #### Step 1
 
-For test use-case, we select 3 songs from the [covers80](https://labrosa.ee.columbia.edu/projects/coversongs/covers80/) dataset as query song, true reference song and false reference song respectively.
+For test example, we selected 3 songs from the [covers80](https://labrosa.ee.columbia.edu/projects/coversongs/covers80/) dataset as a query song, true reference song and a false reference song respectively.
 
 - Query song
 
@@ -50,7 +50,7 @@ For test use-case, we select 3 songs from the [covers80](https://labrosa.ee.colu
 <audio src="{{ site.baseurl }}/assets/cover-song-similarity/aerosmith+Live_Bootleg+06-Come_Together.mp3" controls preload></audio> 
 
 
-Next step is to load our query song and two reference songs using any of the audio loader algorithms in essentia (here we use `MonoLoader`). We compute the frame-wise HPCP chroma features for all of these selected songs using the utility function `essentia.pytools.spectral.hpcpgram` in the essentia python bindings.
+Our first step is to load the pre-selected query song and two reference songs using any of the audio loader algorithms in Essentia (here we use `MonoLoader`. You can check its implementation for more details on how the features are computed). We compute the frame-wise HPCP chroma features for all of these selected songs using the utility function `essentia.pytools.spectral.hpcpgram` in the essentia python bindings.
 
 
 > Note: audio files from the covers80 dataset have a sample rate of 32KHz.
@@ -102,7 +102,7 @@ plt.imshow(query_hpcp[:500].T, aspect='auto', origin='lower')
 #### Step 2
 
 
-Next step is to compute the cross-similarity between the given query and reference song frame-wise HPCP features using [`ChromaChrossSimilarity`](https://essentia.upf.edu/reference/std_ChromaCrossSimilarity.html) algorithm. The algorithm provides mainly two type of methods based on [2] and [4] respectively to compute the aforementioned cross-similarity. 
+Next step is to compute the cross-similarity between the given query and reference song frame-wise HPCP features using [`ChromaChrossSimilarity`](https://essentia.upf.edu/reference/std_ChromaCrossSimilarity.html) algorithm. The algorithm provides two type of methods based on [2] and [4] respectively to compute the aforementioned cross-similarity. 
 
 In this case, we have to compute the cross-similairty between the `query-true_cover` and `query-false_cover` pairs.
 
@@ -120,10 +120,9 @@ cross_similarity = estd.ChromaCrossSimilarity(frameStackSize=9,
 true_pair_sim_matrix = cross_similarity(query_hpcp, true_cover_hpcp)
 ```
 
-Let's plot the obtained cross recurrent plot [2] between the query and true reference cover song HPCP features.
+Let's plot the obtained cross-similarity matrix [2] between the query and true reference cover song frame-wise HPCP features.
 
 ```python
-plt.title('Cross recurrent plot [2]')
 plt.xlabel('Yesterday accapella cover')
 plt.ylabel('Yesterday - The Beatles')
 plt.imshow(true_pair_crp, origin='lower')
@@ -131,44 +130,54 @@ plt.imshow(true_pair_crp, origin='lower')
 
 ![png]({{ site.baseurl }}/assets/cover-song-similarity/crp-true-pair.png)
 
+On the above plot, we can see the similarity between each pair of HPCP frames across query and reference songs. ie, The resulting matrix has a shape `M` x `N` where `M` is the number of frames of query song and `N` is the number of frames of the reference song.
+
+We will call the resulting cross-similarity matrix as `query-true_cover` for further reference. 
 
 Now, let's compute the cross-similarity between the query song and false reference cover song HPCP features.
-
 
 ```python
 false_pair_sim_matrix = cross_similarity(query_hpcp, false_cover_hpcp)
 
 # plot 
-plt.title('Cross recurrent plot [2]')
 plt.xlabel('Come together cover - Aerosmith')
 plt.ylabel('Yesterday - The Beatles')
 plt.imshow(false_pair_crp, origin='lower')
 ```
 
+We will call the resulting cross-similarity matrix as `query-false_cover` for further reference. 
 
 ![png]({{ site.baseurl }}/assets/cover-song-similarity/crp-false-pair.png)
 
-OR (Optional)
+OR 
+
+(Optional)
 
 Alternatively, we can also use the OTI-based binary similarity method as explained in [4] to compute the cross similarity of two given chroma features by enabling the parameter `otiBinary=True`.
 
 ```python
-csm_oti = estd.ChromaCrossSimilarity(frameStackSize=9, 
-                                    frameStackStride=1, 
-                                    binarizePercentile=0.095,
-                                    oti=True,
-                                    otiBinary=True)
+cross_similarity = estd.ChromaCrossSimilarity(frameStackSize=9, 
+                                            frameStackStride=1, 
+                                            binarizePercentile=0.095,
+                                            oti=True,
+                                            otiBinary=True)
 
-oti_csm = csm_oti(query_hpcp, false_cover_hpcp)
+# for query-true_cover cross-similarity
+true_pair_sim_matrix = csm_oti(query_hpcp, true_cover_hpcp)
+
+# for query-false_cover cross-similarity
+false_pair_sim_matrix = cross_similarity(query_hpcp, false_cover_hpcp)
 ```
 
 
 #### Step 3
 
-The last step is to compute an cover song similarity distance between both `query-true_cover` and `query-false_cover` pairs using local sub-sequence alignment algorithm designed for cover song identification task. [`CoverSongSimilarity`](https://essentia.upf.edu/reference/std_CoverSongSimilarity.html) algorithm in essentia provides two alignment constraints of smith-waterman algorithm [6] based on [2] and [3]. We can switch between these methods using the `alignmentType` parameter. Please refer the documentation for more details.
+The last step is to compute an cover song similarity distance between both `query-true_cover` and `query-false_cover` pairs using local sub-sequence alignment algorithm designed for the cover song identification task. [`CoverSongSimilarity`](https://essentia.upf.edu/reference/std_CoverSongSimilarity.html) algorithm in Essentia provides two alignment constraints of the Smith-Waterman algorithm [6] based on [2] and [3]. We can switch between these methods using the `alignmentType` parameter. With parameter `distanceType`, we can also specify if we want a `symmeteric` (maximum value in the alignment score matrix) or `asymmetric` cover similarity distance (normalized by the length of reference song).
+Please refer the documentation and references for more details.
 
 
-Let's compute the cover song similarity distance between true cover song pairs.
+
+Let's compute the cover song similarity distance between true cover song pairs using the method described in [2].
 
 ```python
 score_matrix, distance = estd.CoverSongSimilarity(disOnset=0.5, 
@@ -177,7 +186,11 @@ score_matrix, distance = estd.CoverSongSimilarity(disOnset=0.5,
                                             distanceType='asymmetric')
                                             (true_pair_crp)
 
-# plot
+```
+
+In the above given example, `score_matrix` is the [Smith-Waterman alignment scoring matrix](https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm). Now, let's plot the obtained score matrix and cover song similarity distance.
+
+```python
 plt.title('Cover song similarity distance: %s' % distance)
 plt.xlabel('Yesterday accapella cover')
 plt.ylabel('Yesterday - The Beatles')
@@ -185,7 +198,7 @@ plt.imshow(score_matrix, origin='lower')
 ```
 ![png]({{ site.baseurl }}/assets/cover-song-similarity/true-cover-pair-qmax.png)
 
-
+From the plot, we can clearly see a long and densely closer diagonals which gives us the notion of closer similarity between the query and reference song as expected.
 
 Now, let's compute the cover song similarity distance between false cover song pairs.
 
@@ -205,42 +218,87 @@ plt.imshow(score_matrix, origin='lower')
 
 ![png]({{ site.baseurl }}/assets/cover-song-similarity/false-cover-pair-qmax.png)
 
-
-Voila! We can see that the cover similarity distance is quite low for the actual cover song pairs as expected.
+Voila! We can see that the cover similarity distance is quite low for the actual cover song pairs as expected. 
 
 
 ## Streaming mode computation
 
-We can also compute the aforementioned similarity measures in essentia streaming mode which suits its real-time application use cases. The following code block shows an simple example of the workflow where we stream the query song HPCP feature to compute the real-time cover similarity distance between a pre-selected reference song HPCP feature.
+We can also compute the same similarity measures using the essentia streaming mode, which suits real-time applications. The following code block shows an simple example of the workflow where we stream a query song audio file to compute the cover song similarity distance between a pre-computed reference song HPCP feature in real-time.
 
 ```python
 import essentia.streaming as estr
 from essentia import array, run, Pool
 
-input_stream = estr.VectorInput(query_hpcp)
+query_filename = "../assests/en_vogue+Funky_Divas+09-Yesterday.mp3"
 
-# create instance of streaming cross-similarity matrix algorithm
+# Let's instantiate all the required essentia streaming algorithms
+
+audio = estr.MonoLoader(filename=query_filename, sampleRate=32000)
+  
+frame_cutter = estr.FrameCutter(frameSize=4096, hopSize=2048)
+
+windowing = estr.Windowing(type="blackmanharris62")
+
+spectrum  = estr.Spectrum();
+
+peak = estr.SpectralPeaks(sampleRate=32000)
+
+whitening = estr.SpectralWhitening(maxFrequency=3500,
+                                sampleRate=32000);
+
+hpcp = estr.HPCP(sampleRate=32000,
+                 minFrequency=100,
+                 maxFrequency=3500,
+                 size=12);
+
+# Create an instance of streaming ChromaCrossSimilarity algorithm
+# With parameter `referenceFeature`, 
+# we can pass the pre-computed reference song chroma features.
+# In this case, we use the pre-computed HPCP feature 
+# of the 'true_cover_song'.
+# With parameter `oti`, we can tranpose the pitch 
+# of the reference song HPCP feature
+# to an given OTI [5] (if it's known before hand).
+# By default we set `oti=0`
 sim_matrix = estr.ChromaCrossSimilarity(
-                referenceFeature=true_cover_hpcp)
+                referenceFeature=true_cover_hpcp,
+                oti=0)
 
-# Create an instance of the alignment algorithm 
-# 'pipeDistance=True' stdout distance values for every frame
+# Create an instance of the cover song similarity alignment algorithm 
+# 'pipeDistance=True' stdout distance values for each input stream
 alignment = estr.CoverSongSimilarity(pipeDistance=True)
 
-# Pool instance (python dict like object) to aggregrate the outputs  
+# essentia Pool instance (python dict like object) to aggregrate the outputs  
 pool = Pool()
 
-# connect all the algorithms in a network
-input_stream.data >> sim_matrix.queryFeature
+# Connect all the required algorithms in a essentia streaming network
+# ie., connecting inputs and outputs of the algorithms 
+# in the required workflow and order
+audio.audio >> frame_cutter.signal
+frame_cutter.frame >> windowing.frame
+windowing.frame >> spectrum.frame
+spectrum.spectrum >> peak.spectrum
+spectrum.spectrum >> whitening.spectrum
+peak.magnitudes >> whitening.magnitudes
+peak.frequencies >> whitening.frequencies
+peak.frequencies >> hpcp.frequencies 
+whitening.magnitudes >> hpcp.magnitudes
+hpcp.hpcp >> sim_matrix.queryFeature
 sim_matrix.csm >> alignment.inputArray
 alignment.scoreMatrix >> (pool, 'scoreMatrix')
 alignment.distance >> (pool, 'distance')
 
-# run the algorithm network
-run(input_stream)
+# Run the algorithm network
+run(audio)
+# This process will stdout the cover song similarity distance 
+# for every input stream in realtime.
+# It also aggregrates the Smith-Waterman alignment score matrix 
+# and cover song similarity distance for every accumulating 
+# input audio stream in a essentia pool instance (similar to a python dict) 
+# which can be accessed after the end of the stream.
 
 # Now, let's check the final cover song similarity distance value 
-# computed at the end of stream.
+# computed at the last input stream.
 print(pool['distance'][-1])
 ```
 

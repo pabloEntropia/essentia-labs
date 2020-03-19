@@ -10,7 +10,7 @@ title:            Essentia Labs
 tagline:          'News, projects and activities related to Essentia'
 description:      'News, projects and activities related to <a href="http://essentia.upf.edu" target="_blank">Essentia</a>, an open-source C++ library for audio analysis and audio-based music information retrieval.'
 url:              
-baseurl:          /essentia-labs
+baseurl:          essentia-labs
 author:
   name:           'Dmitry Bogdanov'
   url:            https://twitter.com/essentia_MTG
