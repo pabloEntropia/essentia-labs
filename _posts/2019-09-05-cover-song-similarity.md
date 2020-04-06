@@ -5,23 +5,21 @@ category: news
 ---
 
 
-`Cover Song Identification` or `Music Version Identification` is a task of identifying when two musical recordings are derived from the same music composition. A cover version of a song can be drastically different from the original recording. It may have variations in key, tempo, structure, melody, harmony, timbre, language and lyrics compared to its original version, which makes it a challenging task [1]. It is typically set as a query-retrieval task where the system retrieves a ranked list of possible covers of a given query song from a reference database. We recommend you reading [1] for more comprehensive details of this task. 
+`Cover Song Identification` or `Music Version Identification` is a task of identifying when two musical recordings are derived from the same music composition. A cover version of a song can be drastically different from the original recording. It may have variations in key, tempo, structure, melody, harmony, timbre, language and lyrics compared to its original version, which makes cover song identification a challenging task [1]. It is typically set as a query-retrieval task where the system retrieves a ranked list of possible covers for a given query song from a reference audio database. ie, the top-most element in the ranked list is the most similar cover song to the query song.
 
-Most of the state-of-the-art cover identification systems use pairwise comparison of two musical recordings to compute a similarity distance by using the following workflow.
+Most of the state-of-the-art cover identification systems undergoes the folowing steps to compute a similarity distance using pairwise comparison of given music recordings.
 
+1. Tonal feature extraction using chroma features. This step can be computed using the [`HPCP`](https://essentia.upf.edu/reference/std_HPCP.html) or [`Chromagram`](https://essentia.upf.edu/reference/std_Chromagram.html) algorithms in Essentia.
+2. Post-processing of the tonal feature sequences to achieve various invariance to musical facets (eg. Pitch invariance [5]).
+3. Computing cross-similarity between a pair of query and reference song tonal features [2, 4].
+4. Local sub-sequence alignment to compute the pairwise cover song similarity distance [2, 3, 6].
 
-- Tonal feature extraction using chroma features such as [`HPCP`](https://essentia.upf.edu/reference/std_HPCP.html).
-- Post-processing of the tonal features to achieve various invariance to musical facets (eg. Pitch invariance [5]).
-- Computing cross-similarity between a pair of query and reference song tonal features [2, 4].
-- Local sub-sequence alignment to compute the pairwise cover song similarity distance [2, 3, 6].
-
-
-Recently, we have implemented the following state-of-the-art pairwise cover song identification algorithms in Essentia providing an optimised open-source implementation for both offline and realtime use-cases.
+Recently, we have implemented the following set of algorithms in Essentia to faciliate state-of-the-art cover song identification, providing an optimised open-source implementation for both offline and realtime use-cases. The entire process chain is structured as three different Essentia algorithms in order to provide maximum level of customization for various types of possible use-cases.
 
 - [`CrossSimilarityMatrix`](https://essentia.upf.edu/reference/std_CrossSimilarityMatrix.html) : Compute euclidean cross-similarity between given two framewise feature arrays with an optional parameter to binarize with a given threshold. This is a generic algorithm that can be used for used for computing similarity between any given pair of 2D feature arrays. With parameter `binarize=True`, the output of this algorithm can be used along with local sub-sequence alignment algorithms such as `CoverSongSimilarity`. 
 
 
-- [`ChromaChrossSimilarity`](https://essentia.upf.edu/reference/std_ChromaCrossSimilarity.html) : This algorithm specificaly computes cross-similarity between frame-wise chroma-based features of a query and reference song using cross recurrent plot [2] or OTI-based binary similarity matrix method [4]. With parameter `oti=True`, the algorithm tranpose the pitch of the reference song as of the query song using Optimal Transpose Index [5]. The algorithm always output an binary similarity matrix.
+- [`ChromaChrossSimilarity`](https://essentia.upf.edu/reference/std_ChromaCrossSimilarity.html) : This algorithm specificaly computes cross-similarity between frame-wise chroma-based features of a query and reference song using cross recurrent plot [2] or OTI-based binary similarity matrix method [4]. With parameter `oti=True`, the algorithm transpose the pitch of the reference song as of the query song using Optimal Transpose Index [5]. The algorithm always outputs an binary similarity matrix.
 
 
 - [`CoverSongSimilarity`](https://essentia.upf.edu/reference/std_CoverSongSimilarity.html) : Compute cover song similarity distance from an input binary simialrity matrix using various alignment constraints [2, 3] of Smith-Waterman local sub-sequence alignment algorithm [6]. 
