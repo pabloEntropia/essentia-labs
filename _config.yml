@@ -29,5 +29,3 @@ plugins:
 - jekyll-paginate
 - jekyll-gist
 - jekyll-seo-tag
-
-theme: jekyll-theme-cayman
