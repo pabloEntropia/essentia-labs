@@ -6,7 +6,7 @@ category: news
 ---
 
 
-`Cover Song Identification` or `Music Version Identification` is a task of identifying when two musical recordings are derived from the same musical composition. A cover version of a song can be drastically different from the original recording. It may have variations in key, tempo, structure, melody, harmony, timbre, language and lyrics compared to its original version, which makes cover song identification a challenging task [1]. It is typically set as a query-retrieval task where the system retrieves a ranked list of possible covers for a given query song from a reference audio database. ie, the top-most element in the ranked list is the most similar cover song to the query song.
+Cover Song Identification or Music Version Identification is a task of identifying when two musical recordings are derived from the same musical composition. A cover version of a song can be drastically different from the original recording. It may have variations in key, tempo, structure, melody, harmony, timbre, language and lyrics compared to its original version, which makes cover song identification a challenging task [1]. It is typically set as a query-retrieval task where the system retrieves a ranked list of possible covers for a given query song from a reference audio database. ie, the top-most element in the ranked list is the most similar cover song to the query song.
 
 Most of the state-of-the-art cover identification systems undergo the following steps to compute a similarity distance using a pairwise comparison of given music recordings with a query song.
 
