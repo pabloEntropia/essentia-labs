@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Cover song similarity algorithms in Essentia
+image: /assets/cover-song-similarity/true-cover-pair-qmax.png
 category: news
 ---
 
