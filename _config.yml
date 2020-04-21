@@ -25,4 +25,6 @@ web:
     documentation: http://essentia.upf.edu/documentation
     twitter: https://twitter.com/essentia_MTG
 
-gems: [jekyll-paginate, jekyll-gist]
+plugins:
+- jekyll-paginate
+- jekyll-gist
