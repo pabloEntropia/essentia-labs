@@ -11,7 +11,7 @@ layout: default
   <p>
     {% unless page.categories == empty %}
       {% for cat in page.categories %}
-        [ <a href="{{ site.baseurl }}{{ cat }}">{{ cat }}</a> ]
+        [ <a href="{{ site.baseurl }}/{{ cat }}">{{ cat }}</a> ]
       {% endfor %}
     {% endunless %}
   </p>
