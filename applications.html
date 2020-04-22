@@ -6,6 +6,6 @@ title: Applications
 
 <div class="posts">
   {% for post in site.categories.applications %}
-  <h4><a href="{{ site.baseurl }}/{{ post.url }}">{{ post.title }}</a> &nbsp; <span>{{ post.date | date_to_string }}</span></h4>
+  <h4><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a> &nbsp; <span>{{ post.date | date_to_string }}</span></h4>
   {% endfor %}
 </div>
