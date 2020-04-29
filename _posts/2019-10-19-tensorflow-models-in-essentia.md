@@ -13,36 +13,40 @@ For now, these steps are only valid for Linux. Nevertheless, we are planning to 
 For convenience, we have built special Python 3 Linux wheels for using Essentia with TensorFlow that can be installed with `pip`. These wheels include the required shared library for TensorFlow 1.15. Note that a pip version ≥19.3 is required (you should be fine creating a new virtualenv environment as it will contain an appropriate pip version).
 
 ```sh
-pip install essentia-tensorflow
+pip3 install essentia-tensorflow
 ```
 
 ### Building Essentia from source
 A more flexible option is to build the library from source. This way we have the freedom to choose the TensorFlow version to use, which may be useful to ensure compatibility for certain models. In this case, we keep using version 1.15.
-1. Install TensorFlow:
+1. At least pip version ≥19.3 is required:
 ```bash
-pip install tensorflow==1.15.0
+pip3 install --upgrade pip
 ```
-2. Clone [Essentia](https://github.com/MTG/essentia/):
+2. Install TensorFlow:
+```bash
+pip3 install tensorflow==1.15.0
+```
+3. Clone [Essentia](https://github.com/MTG/essentia/):
 ```sh
 git clone https://github.com/MTG/essentia.git
 ```
-3. Run `setup_from_python.sh` (may require `sudo`). This script exposes the shared libraries contained in the TensorFlow wheel so we can link against them:
+4. Run `setup_from_python.sh` (may require `sudo`). This script exposes the shared libraries contained in the TensorFlow wheel so we can link against them:
 ```sh
 cd essentia && src/3rdparty/tensorflow/setup_from_python.sh
 ```
-4. Install the [dependencies](https://essentia.upf.edu/installing.html#installing-dependencies-on-linux) for Essentia with Python 3:
+5. Install the [dependencies](https://essentia.upf.edu/installing.html#installing-dependencies-on-linux) for Essentia with Python 3 (may require `sudo`):
 ```sh
-sudo apt-get install build-essential libyaml-dev libfftw3-dev libavcodec-dev libavformat-dev libavutil-dev libavresample-dev python-dev libsamplerate0-dev libtag1-dev libchromaprint-dev python-six python3-dev python3-numpy-dev python3-numpy python3-yaml
+apt-get install build-essential libyaml-dev libfftw3-dev libavcodec-dev libavformat-dev libavutil-dev libavresample-dev python-dev libsamplerate0-dev libtag1-dev libchromaprint-dev python-six python3-dev python3-numpy-dev python3-numpy python3-yaml libeigen3-dev
 ```
-5. Configure Essentia with TensorFlow and Python 3:
+6. Configure Essentia with TensorFlow and Python 3:
 ```sh
 python3 waf configure --build-static --with-python --with-tensorflow
 ```
-6. Build everything:
+7. Build everything:
 ```sh
 python3 waf
 ```
-7. Install:
+8. Install:
 ```sh
 python3 waf install
 ```
