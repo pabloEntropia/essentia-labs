@@ -15,7 +15,7 @@ Our demos rely on [SoundCard](https://soundcard.readthedocs.io/en/latest/) to ca
 
 The code can be be found in this [notebook](https://github.com/pabloEntropia/mtg-general-meeting-03-2020-essentia-tensorflow/blob/master/demo-realtime-essentia-tensorflow.ipynb).
 
-One cool feature of our collection of models is that the same chain can be applied to the transfer learning classifiers based on the MusiCNN architecture. Given that those models were obtaining by retraining the last layer of the auto-tagging model, we can use all those without any computational overhead. In the next example, we can see some of our transfer learning classifiers operating simultaneously in real-time.
+One cool feature of our collection of models is that the same chain can be applied to the [transfer learning classifiers](https://mtg.github.io/essentia-labs/news/2020/01/16/tensorflow-models-released/) based on the MusiCNN architecture. Given that those models were obtaining by retraining the last layer of the auto-tagging model, we can use all those without any computational overhead. In the next example, we can see some of our transfer learning classifiers operating simultaneously in real-time.
 
 <iframe width="600" height="480" src="http://www.youtube.com/embed/IWcb8Jx2bk0" frameborder="0" allowfullscreen></iframe>
 
