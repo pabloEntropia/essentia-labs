@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Real-time deep-learning predictions with Essentia
+image: /assets/tensorflow-real-time/tensorflow-real-time.png
 category: news
 ---
 Due to the temporal nature of sound, real-time constraints are a requirement for many related signal processing applications. Examples of this are the modern encoding algorithms that compress the audio and video streams preventing teleconferences from all around the world from collapsing the internet or the modern mixing consoles allowing the simultaneous use of hundreds of audio effects to improve the quality of live performances.
