@@ -2,6 +2,7 @@
 layout: post
 title: TensorFlow models in Essentia
 category: news
+tags: [TensorFlow]
 ---
 Audio Signal Processing and Music Information Retrieval evolve very fast and there is a tendency to rely more and more on Deep Learning solutions. For this reason, we see the necessity to support these solutions in Essentia to keep up with the state of the art. After having worked on this for the past months, we are delighted to present you a new set of algorithms and models that employ TensorFlow in Essentia. These algorithms are suited for inference tasks and offer the flexibility of use, easy extensibility, and (in some cases) real-time inference.
 

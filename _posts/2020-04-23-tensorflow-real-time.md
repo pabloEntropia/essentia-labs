@@ -3,6 +3,7 @@ layout: post
 title: Real-time music annotation with deep learning in Essentia
 image: /assets/tensorflow-real-time/tensorflow-real-time.png
 category: news
+tags: [TensorFlow]
 ---
 In this post, we demonstrate how to use TensorFlow models in Essentia for real-time music audio annotation. Find more information about [the available models](https://mtg.github.io/essentia-labs/news/2020/01/16/tensorflow-models-released/) and the introduction to [our TensorFlow wrapper](https://mtg.github.io/essentia-labs/news/2019/10/19/tensorflow-models-in-essentia/) in our previous posts.
 
