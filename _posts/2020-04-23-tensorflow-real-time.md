@@ -11,12 +11,12 @@ The real-time capability, however, ultimately relies on the complexity of the mo
 
 Our demos rely on [SoundCard](https://soundcard.readthedocs.io/en/latest/) to catch the computer audio loopback (whatever is being played from Youtube, Spotify, your local player...) and stream it into Essentia. We are using our auto-tagging model based in the MusiCNN architecture, already introduced on a [previous post](https://mtg.github.io/essentia-labs/news/2019/10/19/tensorflow-models-in-essentia/). We have adapted our model to operate on chunks of one second of audio. This process does not require any extra training, but it reduces the performance of the model a bit. The video below shows a moving window with the mel bands used for prediction on the left and the activated tags on the right.
 
-[VIDEO 1]
+<iframe width="600" height="480" src="http://www.youtube.com/embed/t1emx0_U3zw" frameborder="0" allowfullscreen></iframe>
 
 The code can be be found in this [notebook](https://github.com/pabloEntropia/mtg-general-meeting-03-2020-essentia-tensorflow/blob/master/demo-realtime-essentia-tensorflow.ipynb).
 
 One cool feature of our collection of models is that the same chain can be applied to the transfer learning classifiers based on the MusiCNN architecture. Given that those models were obtaining by retraining the last layer of the auto-tagging model, we can use all those without any computational overhead. In the next example, we can see some of our transfer learning classifiers operating simultaneously in real-time.
 
-[VIDEO 2]
+<iframe width="600" height="480" src="http://www.youtube.com/embed/IWcb8Jx2bk0" frameborder="0" allowfullscreen></iframe>
 
 We envision many promising applications of this technology as the capability to recognize high-level characteristics on music streams or radio broadcasts. In music production, this could be used to generate valuable real-time feedback with high-level descriptors or to develop a new generation of powerful audio effects based on deep-learning.
