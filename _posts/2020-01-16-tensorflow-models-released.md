@@ -1,6 +1,7 @@
 ---
 layout: post
 title: A collection of TensorFlow models for Essentia
+image: /assets/tensorflow-models-released/penultimate_layer_feats.png
 category: news
 ---
 In our [last post](https://mtg.github.io/essentia-labs//news/2019/10/19/tensorflow-models-in-essentia/), we introduced the TensorFlow wrapper for Essentia. It can be used with virtually any TensorFlow model and here we present a collection of models we supply with Essentia out of the box.
