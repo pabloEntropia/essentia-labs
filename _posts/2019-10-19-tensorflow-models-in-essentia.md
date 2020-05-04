@@ -52,7 +52,7 @@ python3 waf
 python3 waf install
 ```
 
-## Auto-tagging with musiCNN in Streaming mode
+## Auto-tagging with MusiCNN in Streaming mode
 As an example, let's try to use [MusiCNN](https://github.com/jordipons/musicnn), a pre-trained auto-tagging model based on Convolutional Neural Networks (CNNs). There are versions trained on different datasets. In this case, we will consider the model relying on [the subset of Million Song Dataset annotated by last.fm tags](http://millionsongdataset.com/lastfm/) that was trained on the top 50 tags.
 
 Here we are reproducing this [blogpost](https://towardsdatascience.com/musicnn-5d1a5883989b) as a demonstration of how simple it is to incorporate a model into our framework.
