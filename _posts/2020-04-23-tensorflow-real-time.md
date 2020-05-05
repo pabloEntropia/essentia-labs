@@ -16,13 +16,13 @@ This process does not require any extra training, but it reduces the performance
 
 The video below shows a moving mel-spectrogram window on the left and the resulting tag activations on the right.
 
-<iframe width="600" height="480" src="http://www.youtube.com/embed/t1emx0_U3zw" frameborder="0" allowfullscreen></iframe>
+<iframe width="600" height="480" src="https://www.youtube.com/embed/t1emx0_U3zw" frameborder="0" allowfullscreen></iframe>
 
 The code can be found in this [notebook](https://github.com/pabloEntropia/mtg-general-meeting-03-2020-essentia-tensorflow/blob/master/demo-realtime-essentia-tensorflow.ipynb).
 
 One cool feature of our collection of models is that the same processing chain can be applied to the transfer learning classifiers based on the MusiCNN architecture. These classifier models were obtaining by retraining the last layer of the MusiCNN auto-tagging model, and therefore we can use all of them simultaneously without any computational overhead. In the next video, you can see the real-time predictions of the classifiers trained for detecting aggressive and happy moods, danceability, and voice activity in music.
 
-<iframe width="600" height="480" src="http://www.youtube.com/embed/IWcb8Jx2bk0" frameborder="0" allowfullscreen></iframe>
+<iframe width="600" height="480" src="https://www.youtube.com/embed/IWcb8Jx2bk0" frameborder="0" allowfullscreen></iframe>
 
 You are welcome to try this demo on your own, and of course, it can be adapted to many other TensorFlow models for sound and music audio annotation.
 
