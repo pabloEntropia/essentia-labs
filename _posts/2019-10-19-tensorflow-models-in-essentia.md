@@ -1,54 +1,59 @@
 ---
 layout: post
 title: TensorFlow models in Essentia
+image: /assets/tensorflow-models-in-essentia/taggram.png
 category: news
 ---
 Audio Signal Processing and Music Information Retrieval evolve very fast and there is a tendency to rely more and more on Deep Learning solutions. For this reason, we see the necessity to support these solutions in Essentia to keep up with the state of the art. After having worked on this for the past months, we are delighted to present you a new set of algorithms and models that employ TensorFlow in Essentia. These algorithms are suited for inference tasks and offer the flexibility of use, easy extensibility, and (in some cases) real-time inference.
 
-In this post, we will show how to install Essentia with TensorFlow support, how to prepare your pre-trained models and how to use them for prediction in both streaming and standard modes.
-For now, these steps are only valid for Linux. Nevertheless, we are planning to support other platforms too.
+In this post, we will show how to install Essentia with TensorFlow support, how to prepare your pre-trained models, and how to use them for prediction in both streaming and standard modes. See our [next post](https://mtg.github.io/essentia-labs/news/2020/01/16/tensorflow-models-released/) for the list of all models available in Essentia.
+For now, the installation steps are only available for Linux. Nevertheless, we are planning to support other platforms too.
 
 ## Installing Essentia with TensorFlow
 ### From PyPI wheels
 For convenience, we have built special Python 3 Linux wheels for using Essentia with TensorFlow that can be installed with `pip`. These wheels include the required shared library for TensorFlow 1.15. Note that a pip version ≥19.3 is required (you should be fine creating a new virtualenv environment as it will contain an appropriate pip version).
 
 ```sh
-pip install essentia-tensorflow
+pip3 install essentia-tensorflow
 ```
 
 ### Building Essentia from source
 A more flexible option is to build the library from source. This way we have the freedom to choose the TensorFlow version to use, which may be useful to ensure compatibility for certain models. In this case, we keep using version 1.15.
-1. Install TensorFlow:
+1. At least pip version ≥19.3 is required:
 ```bash
-pip install tensorflow==1.15.0
+pip3 install --upgrade pip
 ```
-2. Clone [Essentia](https://github.com/MTG/essentia/):
+2. Install TensorFlow:
+```bash
+pip3 install tensorflow==1.15.0
+```
+3. Clone [Essentia](https://github.com/MTG/essentia/):
 ```sh
 git clone https://github.com/MTG/essentia.git
 ```
-3. Run `setup_from_python.sh` (may require `sudo`). This script exposes the shared libraries contained in the TensorFlow wheel so we can link against them:
+4. Run `setup_from_python.sh` (may require `sudo`). This script exposes the shared libraries contained in the TensorFlow wheel so we can link against them:
 ```sh
 cd essentia && src/3rdparty/tensorflow/setup_from_python.sh
 ```
-4. Install the [dependencies](https://essentia.upf.edu/installing.html#installing-dependencies-on-linux) for Essentia with Python 3:
+5. Install the [dependencies](https://essentia.upf.edu/installing.html#installing-dependencies-on-linux) for Essentia with Python 3 (may require `sudo`):
 ```sh
-sudo apt-get install build-essential libyaml-dev libfftw3-dev libavcodec-dev libavformat-dev libavutil-dev libavresample-dev python-dev libsamplerate0-dev libtag1-dev libchromaprint-dev python-six python3-dev python3-numpy-dev python3-numpy python3-yaml
+apt-get install build-essential libyaml-dev libfftw3-dev libavcodec-dev libavformat-dev libavutil-dev libavresample-dev python-dev libsamplerate0-dev libtag1-dev libchromaprint-dev python-six python3-dev python3-numpy-dev python3-numpy python3-yaml libeigen3-dev
 ```
-5. Configure Essentia with TensorFlow and Python 3:
+6. Configure Essentia with TensorFlow and Python 3:
 ```sh
 python3 waf configure --build-static --with-python --with-tensorflow
 ```
-6. Build everything:
+7. Build everything:
 ```sh
 python3 waf
 ```
-7. Install:
+8. Install:
 ```sh
 python3 waf install
 ```
 
-## Auto-tagging with musiCNN in Streaming mode
-As an example, let's try to use [musiCNN](https://github.com/jordipons/musicnn), a pre-trained auto-tagging model based on Convolutional Neural Networks (CNNs). There are versions trained on different datasets. In this case, we will consider the model relying on [the subset of Million Song Dataset annotated by last.fm tags](http://millionsongdataset.com/lastfm/) that was trained on the top 50 tags.
+## Auto-tagging with MusiCNN in Streaming mode
+As an example, let's try to use [MusiCNN](https://github.com/jordipons/musicnn), a pre-trained auto-tagging model based on Convolutional Neural Networks (CNNs). There are versions trained on different datasets. In this case, we will consider the model relying on [the subset of Million Song Dataset annotated by last.fm tags](http://millionsongdataset.com/lastfm/) that was trained on the top 50 tags.
 
 Here we are reproducing this [blogpost](https://towardsdatascience.com/musicnn-5d1a5883989b) as a demonstration of how simple it is to incorporate a model into our framework.
 All we need is to get the [model in Protobuf format](https://essentia.upf.edu/models/autotagging/msd/msd-musicnn.pb) (we provide more pre-made models on [our webpage](https://essentia.upf.edu/documentation/models/)) and obtain its labels and the names of the input and output layers. If the names of the layers are not supplied there are plenty of online resources explaining how to [inspect the model](https://medium.com/@daj/how-to-inspect-a-pre-trained-tensorflow-model-5fd2ee79ced0) to get those.
