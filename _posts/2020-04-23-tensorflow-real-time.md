@@ -6,7 +6,7 @@ category:
 - news
 - tensorflow
 ---
-In this post, we demonstrate how to use TensorFlow models in Essentia for real-time music audio annotation. Find more information about [the available models](https://mtg.github.io/essentia-labs/news/2020/01/16/tensorflow-models-released/) and the introduction to [our TensorFlow wrapper](https://mtg.github.io/essentia-labs/news/2019/10/19/tensorflow-models-in-essentia/) in our previous posts.
+In this post, we demonstrate how to use TensorFlow models in Essentia for real-time music audio annotation. Find more information about [the available models](2020-01-16-tensorflow-models-released.md) and the introduction to [our TensorFlow wrapper](2019-10-19-tensorflow-models-in-essentia.md) in our previous posts.
 
 Real-time constraints are a common requirement for many applications that involve digital audio signal processing and analysis in a wide variety of contexts, and deployment scenarios, and the approaches relying on deep learning should be no exception. For this reason, we have equipped Essentia with algorithms that support inference with deep learning models in real-time.
 This real-time capability, however, ultimately relies on the complexity of the models and the computational resources at hand. Some of our models currently available for download are lightweight enough to perform real-time predictions with a CPU on a regular laptop, and we have prepared a demo to show you this!

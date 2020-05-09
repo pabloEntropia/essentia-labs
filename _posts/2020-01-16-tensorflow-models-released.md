@@ -6,7 +6,7 @@ category:
 - news
 - tensorflow
 ---
-In our [last post](https://mtg.github.io/essentia-labs//news/2019/10/19/tensorflow-models-in-essentia/), we introduced the TensorFlow wrapper for Essentia. It can be used with virtually any TensorFlow model and here we present a collection of models we supply with Essentia out of the box.
+In our [last post](2019-10-19-tensorflow-models-in-essentia.md), we introduced the TensorFlow wrapper for Essentia. It can be used with virtually any TensorFlow model and here we present a collection of models we supply with Essentia out of the box.
 
 First, we prepared a set of pre-trained *auto-tagging models* achieving state
 of-the-art performance. Then, we used those models as feature extractors to

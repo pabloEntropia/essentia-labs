@@ -8,7 +8,7 @@ category:
 ---
 Audio Signal Processing and Music Information Retrieval evolve very fast and there is a tendency to rely more and more on Deep Learning solutions. For this reason, we see the necessity to support these solutions in Essentia to keep up with the state of the art. After having worked on this for the past months, we are delighted to present you a new set of algorithms and models that employ TensorFlow in Essentia. These algorithms are suited for inference tasks and offer the flexibility of use, easy extensibility, and (in some cases) real-time inference.
 
-In this post, we will show how to install Essentia with TensorFlow support, how to prepare your pre-trained models, and how to use them for prediction in both streaming and standard modes. See our [next post](https://mtg.github.io/essentia-labs/news/2020/01/16/tensorflow-models-released/) for the list of all models available in Essentia.
+In this post, we will show how to install Essentia with TensorFlow support, how to prepare your pre-trained models, and how to use them for prediction in both streaming and standard modes. See our [next post](2020-01-16-tensorflow-models-released.md) for the list of all models available in Essentia.
 For now, the installation steps are only available for Linux. Nevertheless, we are planning to support other platforms too.
 
 ## Installing Essentia with TensorFlow

@@ -25,7 +25,12 @@ web:
     documentation: http://essentia.upf.edu/documentation
     twitter: https://twitter.com/essentia_MTG
 
+relative_links:
+  enabled:     true
+  collections: true
+
 plugins:
 - jekyll-paginate
 - jekyll-gist
 - jekyll-seo-tag
+- jekyll-relative-links
