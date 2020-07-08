@@ -6,6 +6,9 @@ category:
 - news
 - tensorflow
 ---
+
+*Note: the models were updated on 2020-07-08 due to a new name convention and some upgrades. See the full [CHANGELOG](https://essentia.upf.edu/models/CHANGELOG.md) for more details.*
+
 In our [last post](2019-10-19-tensorflow-models-in-essentia.md), we introduced the TensorFlow wrapper for Essentia. It can be used with virtually any TensorFlow model and here we present a collection of models we supply with Essentia out of the box.
 
 First, we prepared a set of pre-trained *auto-tagging models* achieving state
